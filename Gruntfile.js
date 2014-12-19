@@ -395,7 +395,7 @@ module.exports = function (grunt) {
       },
       heroku: {
         options: {
-          remote: 'production',
+          remote: 'heroku',
           branch: 'master'
         }
       },
