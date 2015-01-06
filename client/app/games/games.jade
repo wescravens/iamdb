@@ -1,11 +1,3 @@
-div(ng-include='"components/navbar/navbar.html"')
-
-header#banner.hero-unit
-  .container
-    h1 I AM DB
-    p.lead A multiplayer movie trivia game built with Node, Express, Socket.IO, Passport, and Angular.
-    img(src='assets/images/yeoman.png', alt='I\'m Yeoman')
-
 .container
   .row
     .col-lg-12
@@ -15,6 +7,7 @@ header#banner.hero-unit
           a(href='#', tooltip='{{game.info}}')
             | {{game.name}}
             button.btn.btn-blue(type='button', ng-click='joinGame(game)') Join
+            button.btn.btn-red(type='button', ng-click='leaveGame(game)') Leave
 
   form.thing-form
     label Syncs in realtime across clients

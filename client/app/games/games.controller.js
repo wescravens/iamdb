@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('iamdbApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Auth, CONSTANTS, play) {
+  .controller('GamesCtrl', function ($http, $scope, Auth, socket, CONSTANTS, play) {
     $scope.games = [];
 
     function getUser () {
@@ -39,9 +39,18 @@ angular.module('iamdbApp')
     //   location = CONSTANTS.UI_ENDPOINTS.PLAY + '/' + game._id;
     // };
 
-    $scope.joinGame = play.joinGame;
+    $scope.joinGame = function (game) {
+      play.joinGame(game, function () {
+          console.log('game', game);
+          play.goToGame(game);
+        });
+    };
 
-    $scope.leaveGame = play.leaveGame;
+    $scope.leaveGame = function (game) {
+      play.leaveGame(game, function () {
+        console.log('game', game);
+      });
+    };
 
     $scope.endGame = function (game) {
       $http.delete(CONSTANTS.API_ENDPOINTS.GAMES + '/' + game._id);

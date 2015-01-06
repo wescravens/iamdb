@@ -14,10 +14,13 @@ var validationError = function(res, err) {
  * restriction: 'admin'
  */
 exports.index = function(req, res) {
-  User.find({}, '-salt -hashedPassword', function (err, users) {
-    if(err) return res.send(500, err);
-    res.json(200, users);
-  });
+  User
+    .find({})
+    .select(config.userPrivateFields)
+    .exec(function (err, users) {
+      if(err) return res.send(500, err);
+      res.json(200, users);
+    });
 };
 
 /**
@@ -35,11 +38,10 @@ exports.create = function (req, res, next) {
 };
 
 /**
- * Get a single user
+ * Get user(s)
  */
 exports.show = function (req, res, next) {
   var userId = req.params.id;
-
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
@@ -84,13 +86,17 @@ exports.changePassword = function(req, res, next) {
  */
 exports.me = function(req, res, next) {
   var userId = req.user._id;
-  User.findOne({
-    _id: userId
-  }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
-    if (err) return next(err);
-    if (!user) return res.json(401);
-    res.json(user);
-  });
+  User
+    .findOne({
+      _id: userId
+    })
+    .select(config.userPrivateFields)
+    .exec(function(err, user) { // don't ever give out the password or salt
+      if (err) return next(err);
+      if (!user) return res.json(401);
+      res.json(user);
+    })
+  ;
 };
 
 /**
@@ -99,3 +105,7 @@ exports.me = function(req, res, next) {
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
 };
+
+function handleError(res, err) {
+  return res.send(500, err);
+}

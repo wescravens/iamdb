@@ -32,6 +32,8 @@ var all = {
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
 
+  userPrivateFields: '-salt -hashedPassword',
+
   // MongoDB connection options
   mongo: {
     options: {
