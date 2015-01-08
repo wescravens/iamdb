@@ -2,9 +2,9 @@
   .row
     .col-lg-12
       h1.page-header Active Games:
-      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-repeat='game in games')
+      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-init='fetchGames()' ,ng-repeat='game in games')
         li
-          a(href='#', tooltip='{{game.info}}')
+          a(sref='play/{{game.name}}')
             | {{game.name}}
             button.btn.btn-blue(type='button', ng-click='joinGame(game)') Join
             button.btn.btn-red(type='button', ng-click='leaveGame(game)') Leave
@@ -12,9 +12,9 @@
   form.thing-form
     label Syncs in realtime across clients
     p.input-group
-      input.form-control(type='text', placeholder='Add a new thing here.', ng-model='newGame')
+      input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
       span.input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='addGame()') Add New
+        button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
 
 footer.footer
   .container

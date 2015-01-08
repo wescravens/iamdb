@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 
 var GameSchema = new Schema({
   name: {type: String, unique: true},
+  host: {type: ObjectId, ref: 'User'},
   players: [{type: ObjectId, ref: 'User'}],
   turn: String,
   rounds: Array,

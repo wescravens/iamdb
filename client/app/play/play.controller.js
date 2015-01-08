@@ -1,15 +1,40 @@
 'use strict';
 
-angular.module('iamdbApp')
-  .controller('PlayCtrl', function ($scope, $http, $stateParams, socket, Auth, CONSTANTS, play) {
-    $scope.currentUser = Auth.getCurrentUser();
-    $scope.game = {};
+function PlayCtrl(
+  $scope,
+  $stateParams,
+  $location,
+  socket,
+  Play,
+  Auth
+){
+  $scope.currentUser = Auth.getCurrentUser();
+  $scope.game = {};
 
-    play.fetchGame().success(function (game) {
-      console.log('game', game);
-      $scope.game = game;
+  Play.fetchGame($stateParams.gameName, function (game) {
+    console.log('game', game);
+    $scope.game = game;
+    socket.syncUpdates('game', $scope.game);
+  });
+
+  $scope.playerIsHost = function (player) {
+    return !!_.find($scope.game.players, {_id: player._id});
+  };
+
+  $scope.currentUserIsPlayer = function () {
+    return _.indexOf($scope.game.players, $scope.currentUser._id) !== -1;
+  };
+
+  $scope.joinGame = function (game) {
+    Play.joinGame(game, function (game) {
+      console.log('joined game', game);
     });
+  };
 
-    // $scope.joinGame = play.joinGame;
-  })
-;
+  $scope.$on('$destroy', function () {
+    socket.unsyncUpdates('game');
+  });
+}
+
+angular.module('iamdbApp')
+  .controller('PlayCtrl', PlayCtrl);

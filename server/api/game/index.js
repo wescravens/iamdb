@@ -6,12 +6,12 @@ var controller = require('./game.controller');
 var router = express.Router();
 
 router.get('/', controller.index);
-router.get('/:id', controller.show);
+router.get('/:name', controller.show);
 router.post('/', controller.create);
-router.put('/:id/join', controller.joinGame);
-router.patch('/:id/join', controller.joinGame);
+router.put('/:name/join', controller.joinGame);
+router.patch('/:name/join', controller.joinGame);
 // router.put('/:id', controller.update);
 // router.patch('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.delete('/:name', controller.destroy);
 
 module.exports = router;

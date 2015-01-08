@@ -4,7 +4,7 @@ angular.module('iamdbApp')
   .config(function ($stateProvider) {
     $stateProvider
       .state('play', {
-        url: '/play/:gameId',
+        url: '/play/:gameName',
         templateUrl: 'app/play/play.html',
         controller: 'PlayCtrl'
       });

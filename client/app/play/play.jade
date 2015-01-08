@@ -4,10 +4,11 @@ div(ng-include='"components/navbar/navbar.html"')
   .row
     .col-lg-12
       h1.page-header Game: {{game.name}}
-      button.btn.btn-primary(ng-click='joinGame(game)') Join
+      button.btn.btn-primary(ng-click='joinGame(game)', ng-show='!currentUserIsPlayer()') Join
       ul
         li(ng-repeat='player in game.players')
           p {{player.name}}
+            span(ng-show='playerIsHost(player)') Host
 
 footer.footer
   .container
