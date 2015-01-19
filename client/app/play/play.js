@@ -17,9 +17,7 @@ var playStates = {
 
 angular.module('iamdbApp')
   .config(function ($stateProvider) {
-    // _.each(playStates, function (state) {
-    //   $stateProvider.state(state);
-    // });
-    $stateProvider.state(playStates.index);
-    $stateProvider.state(playStates.game);
+    _.each(playStates, function (state) {
+      $stateProvider.state(state);
+    });
   });

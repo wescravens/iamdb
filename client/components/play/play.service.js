@@ -7,7 +7,6 @@ function Play(
   Auth,
   Game
 ){
-  var currentUser = Auth.getCurrentUser();
 
   return {
     /**
@@ -76,7 +75,7 @@ function Play(
             name: game.name,
             controller: 'join'
           },
-          currentUser,
+          Auth.getCurrentUser(),
           function (game) { return cb(game); },
           function (err) { return cb(err); }
         )

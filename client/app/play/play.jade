@@ -1,3 +1,5 @@
+div(ng-include='"components/navbar/navbar.html"')
+
 .container(ng-init='fetchGames()')
   .row
     form.create-game-form
@@ -7,12 +9,15 @@
         span.input-group-btn
           button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
   .row
-    .col-xs-12
+    .col-xs-12.col-sm-3
       .gamecordion
         a.gamecordion__game(ng-repeat='game in games', ui-sref='play.game({id: game.name})')
           b.gamecordion__gametitle {{game.name}}
-          .gamecordion__gameview(ui-view='')
-            //- Game will populate here on expand
+    .col-xs-12.col-sm-9
+      .game
+        .game__view(ui-view='')
+          //- Game will populate here on expand
+
 
 
 

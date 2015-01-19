@@ -58,8 +58,11 @@ exports.joinGame = function (req, res) {
   Game.findOne(
     {name: req.params.name},
     function (err, game) {
-      console.log('game', game);
       if (err) { return handleError(res, err); }
+      var duplicatePlayer = game.players.some(function (player) {
+        return player.equals(req.body._id);
+      });
+      if (duplicatePlayer) return res.json(200, game);
       game.players.push(req.body._id);
       game.save();
       res.json(200, game);
@@ -83,7 +86,6 @@ exports.destroy = function(req, res) {
   Game.findById(req.params.id, function (err, game) {
     if (err) { return handleError(res, err); }
     if (!game) { return res.send(404); }
-    console.log('remove request', req.session);
     game.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
