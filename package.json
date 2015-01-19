@@ -89,7 +89,7 @@
   },
   "scripts": {
     "start": "node server/app.js",
-    "postinstall": "postinstall.sh",
+    "postinstall": "if hash bower 2>/dev/null; then bower install; else exit 0; fi",
     "test": "grunt test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
