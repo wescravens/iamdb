@@ -1,34 +1,49 @@
 'use strict';
 
 function PlayCtrl(
+  $http,
   $scope,
-  $stateParams,
-  $location,
-  socket,
+  $log,
+  Auth,
   Play,
-  Auth
+  socket
 ){
+  $scope.games = [];
   $scope.currentUser = Auth.getCurrentUser();
-  $scope.game = {};
 
-  Play.fetchGame($stateParams.gameName, function (game) {
-    console.log('game', game);
-    $scope.game = game;
-    socket.syncUpdates('game', $scope.game);
-  });
+  console.log('games controller');
 
-  $scope.playerIsHost = function (player) {
-    return !!_.find($scope.game.players, {_id: player._id});
+  $scope.fetchGames = function () {
+    console.log('fetching games');
+    Play.fetchGames(function (games) {
+      console.log('recieved %s', games.length, games);
+      $scope.games = games;
+      socket.syncUpdates('game', $scope.games);
+    });
   };
 
-  $scope.currentUserIsPlayer = function () {
-    return _.indexOf($scope.game.players, $scope.currentUser._id) !== -1;
+  $scope.isPlayer = function (user, game) {
+    return !!_.find(game.players, {_id: user._id});
   };
 
   $scope.joinGame = function (game) {
-    Play.joinGame(game, function (game) {
+    Play.joinGame(game, function () {
       console.log('joined game', game);
     });
+  };
+
+  $scope.leaveGame = function (game) {
+    Play.leaveGame(game, function (game) {
+      console.log('left game', game);
+    });
+  };
+
+  $scope.createGame = function () {
+    var newGame = {
+      name: $scope.gameName,
+      players: [$scope.currentUser._id]
+    };
+    Play.createGame(newGame);
   };
 
   $scope.$on('$destroy', function () {

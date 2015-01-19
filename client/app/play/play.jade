@@ -1,14 +1,20 @@
-div(ng-include='"components/navbar/navbar.html"')
-
-.container
+.container(ng-init='fetchGames()')
   .row
-    .col-lg-12
-      h1.page-header Game: {{game.name}}
-      button.btn.btn-primary(ng-click='joinGame(game)', ng-show='!currentUserIsPlayer()') Join
-      ul
-        li(ng-repeat='player in game.players')
-          p {{player.name}}
-            span(ng-show='playerIsHost(player)') Host
+    form.create-game-form
+      label Create a new game
+      p.input-group
+        input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
+        span.input-group-btn
+          button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
+  .row
+    .col-xs-12
+      .gamecordion
+        a.gamecordion__game(ng-repeat='game in games', ui-sref='play.game({id: game.name})')
+          b.gamecordion__gametitle {{game.name}}
+          .gamecordion__gameview(ui-view='')
+            //- Game will populate here on expand
+
+
 
 footer.footer
   .container

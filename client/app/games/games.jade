@@ -1,13 +1,24 @@
-.container
+.container(ng-init='fetchGames()')
   .row
     .col-lg-12
       h1.page-header Active Games:
-      ul.nav.nav-tabs.nav-stacked.col-md-4.col-lg-4.col-sm-6(ng-init='fetchGames()' ,ng-repeat='game in games')
+      ul.nav.nav-tabs.nav-stacked(ng-repeat='game in games')
         li
-          a(sref='play/{{game.name}}')
-            | {{game.name}}
-            button.btn.btn-blue(type='button', ng-click='joinGame(game)') Join
-            button.btn.btn-red(type='button', ng-click='leaveGame(game)') Leave
+          div.game-item
+            b {{game.name}}
+            span.game-item__action.button-group(dropdown='', on-toggle='toggled(open)')
+              button.btn.btn-primary.dropdown-toggle(type='button', dropdown-toggle='')
+                | Action &nbsp;
+                span.caret
+              ul.dropdown-menu
+                li
+                  a(ng-click='joinGame(game); $event.stopPropagation();') Join
+                li
+                  a(ui-sref='play({gameName: game.name})') View
+                li.divider
+                li(ng-show='!isPlayer(currentUser, game)')
+                  a(ui-sref='play({gameName: game.name})') Leave
+
 
   form.thing-form
     label Syncs in realtime across clients
