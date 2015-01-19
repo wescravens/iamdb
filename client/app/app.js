@@ -16,18 +16,6 @@ angular.module('iamdbApp', [
     $httpProvider.interceptors.push('authInterceptor');
   })
 
-  .constant('CONSTANTS', {
-    'UI_ENDPOINTS': {
-      'LOGIN': '/login',
-      'PLAY': '/play',
-      'GAMES': '/games'
-    },
-    'API_ENDPOINTS': {
-      'GAMES': '/api/games',
-      'USERS': '/api/users'
-    }
-  })
-
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {
       // Add authorization token to headers
