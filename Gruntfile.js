@@ -373,7 +373,6 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             'package.json',
-            'postinstall.sh',
             'server/**/*'
           ]
         }]
