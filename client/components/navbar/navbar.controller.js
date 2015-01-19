@@ -2,10 +2,15 @@
 
 angular.module('iamdbApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-    $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
-    }];
+    $scope.menu = [
+      {
+        'title': 'Home',
+        'link': '/'
+      },{
+        'title': 'Play',
+        'link': '/play'
+      }
+    ];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
