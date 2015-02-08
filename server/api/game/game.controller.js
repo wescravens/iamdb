@@ -103,36 +103,17 @@ exports.configuration = function (req, res) {
 };
 
 exports.validate = function (req, res) {
-  q.fcall(tmdbService.validate, req)
-    .then(addToHistory)
-    .then(function (game) {
-      res.json(200, game);
-    })
-    .fail(function (err) {
-      handleError(res, err);
-    })
-  ;
-
-  function addToHistory (req, validTurn, cb) {
-    var deferred = q.defer();
-    cb = cb || _.noop;
+  tmdbService.validate(req, function (err, validatedTurn) {
     Game.findOne(
       {name: req.params.name},
       function (err, game) {
-        if (err) {
-          cb(err);
-          deferred.reject(err);
-          return;
-        }
-
-        game.history.unshift(validTurn);
+        if (err) return handleError(res, err);
+        game.history.unshift(validatedTurn);
         game.save();
-        cb(null, game);
-        deferred.resolve(game);
+        res.json(200, validatedTurn);
       }
     );
-    return deferred;
-  }
+  });
 };
 
 function handleError(res, err) {

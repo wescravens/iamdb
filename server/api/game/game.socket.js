@@ -17,7 +17,6 @@ exports.register = function(socket) {
 }
 
 function onSave (socket, game, cb) {
-  console.log('game socket save', game);
   socket.emit('game:save', game);
   socket.to(game.name).emit('game:save', game);
 }

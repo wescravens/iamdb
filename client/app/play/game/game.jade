@@ -24,12 +24,19 @@
     .movie-result(ng-if='searchController == "movie"')
       .result.col-md-4(ng-repeat='result in results')
         p {{result.original_title}}
-          img(ng-src='{{baseImageUrl}}{{result.poster_path}}')
+          img(ng-src='{{baseImageUrl}}{{result.poster_path}}', ng-click='testValidation(result.id)')
 
     .person-result(ng-if='searchController == "person"')
       .result(ng-repeat='result in results')
-        strong {{result.name}}
-        p(ng-if='result.name') Known For:
-        .col-md-4(ng-repeat='movie in result.known_for')
-          p {{movie.original_title}}
-          img(ng-src='{{baseImageUrl}}{{movie.poster_path}}')
+        .row
+          .col-md-4
+          .col-md-4
+            strong {{result.name}} id: {{result.id}}
+            img(ng-src='{{baseImageUrl}}{{result.profile_path}}', ng-click='testValidation(result.id)')
+          .col-md-4
+        .row
+          .col-xs-12(ng-if='result.known_for')
+            p Known For:
+          .col-md-4(ng-repeat='movie in result.known_for')
+            p {{movie.original_title}}
+            img(ng-src='{{baseImageUrl}}{{movie.poster_path}}')

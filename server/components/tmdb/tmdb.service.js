@@ -5,7 +5,6 @@ var config = require('../../config/environment');
 var apiParams = {api_key: config.tmdb.apiKey};
 var baseUrl = config.tmdb.baseUrl;
 
-
 /**
  * Validates a TMDB actor or movie
  * @param  {String}   gameName Name of the game
@@ -15,11 +14,16 @@ var baseUrl = config.tmdb.baseUrl;
  */
 exports.validate = function (req, cb) {
   cb = cb || _.noop;
-  var deferred = q.defer();
   var turn = req.body;
-  var controller = turn.question.isActor ? '/people/{id}/movie_credits' : '/movie/{id}/credits';
-  console.log('turn', turn, typeof turn.input);
-  controller.replace('{id}', turn.input);
+  var actor = turn.input;
+  var movie = turn.question.subject;
+
+  if (turn.question.isActor) {
+    actor = turn.question.subject;
+    movie = turn.input
+  }
+
+  var controller = '/person/' + actor + '/movie_credits'
 
   var options = {
     method: 'GET',
@@ -28,17 +32,13 @@ exports.validate = function (req, cb) {
   };
 
   request(options, function (err, response, body) {
-    if (err) {
-      cb(err);
-      deferred.reject(err);
-      return;
-    }
-    cb(null, body);
-    var validatedTurn; // TODO: actual validation :)
-    deferred.resolve(req, validatedTurn);
+    if (err) return cb(err);
+    body = JSON.parse(body);
+    var reference = _.find(body.cast, {id: movie});
+    turn.valid = !!reference;
+    turn.character = turn.valid ? reference.character : '';
+    cb(null, turn);
   });
-
-  return deferred;
 };
 
 /**

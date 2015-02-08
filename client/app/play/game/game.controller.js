@@ -43,20 +43,23 @@ function PlayGameCtrl(
     return _.find($scope.game.players, {_id: $scope.currentUser._id});
   };
 
-  // $scope.turn = {
-  //   question: {
-  //     subject: ,
-  //   }
-  // };
-
   // TODO: remove this
-  $scope.testValidation = function () {
-    $http.post('/api/games/' + $scope.game.name + '/validate', {})
-      .success(function (data) {
+  $scope.testValidation = function (id) {
+    var testTurn = {
+      player: $scope.currentUser._id,
+      question: {
+        subject: 17051, // james franco
+        isActor: true
+      },
+      input: id
+    };
 
+    $http.post('/api/games/' + $scope.game.name + '/validate', testTurn)
+      .success(function (data) {
+        console.log('vaidation: ', data);
       })
       .error(function (data, status) {
-
+        console.log('validation error: ', data, status);
       })
     ;
   };
