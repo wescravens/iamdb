@@ -39,7 +39,7 @@ function Main(
   };
 
   $scope.searchTMDB = function () {
-    $http.get('/api/search/search/person', {params: {query: $scope.query || 'brad pitt'}})
+    $http.get('/api/search/person', {params: {query: $scope.query}})
       .success(function (data) {
         console.log('success', data);
       })
