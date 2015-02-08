@@ -1,7 +1,7 @@
 'use strict';
 
 function GameResource ($resource) {
-  return $resource('/api/games/:name/:controller',{}, {
+  return $resource('/api/games/:name/:controller', {}, {
     join: {
       method: 'PUT',
       params: {
@@ -13,6 +13,15 @@ function GameResource ($resource) {
       params: {
         controller: 'leave'
       }
+    },
+    history: {
+      method: 'PUT',
+      params: {
+        controller: 'history'
+      }
+    },
+    update: {
+      method: 'PUT'
     }
   });
 }

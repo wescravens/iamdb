@@ -1,7 +1,6 @@
 'use strict';
 
 function Play(
-  $http,
   $stateParams,
   $q,
   Auth,
@@ -93,8 +92,11 @@ function Play(
 
       return Game
         .leave(
-          {_id: game._id},
-          currentUser,
+          {
+            name: game.name,
+            controller: 'leave'
+          },
+          Auth.getCurrentUser(),
           function (game) { return cb(game); },
           function (err) { return cb(err); }
         )
@@ -117,6 +119,18 @@ function Play(
           function (err) { return cb(err); }
         )
         .$promise
+      ;
+    },
+    sendState: function (game, callback) {
+      var cb = callback || angular.noop;
+
+      return Game
+        .update(
+          {name: game.name},
+          game,
+          function () { return cb(); },
+          function (err) { return cb(err); }
+        ).$promise
       ;
     }
   };

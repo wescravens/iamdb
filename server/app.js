@@ -11,6 +11,10 @@ var express = require('express');
 var mongoose = require('mongoose');
 var config = require('./config/environment');
 
+if (!config.tmdb.api_key && process.env.NODE_ENV === 'development') {
+  console.log('TMDB api requests will be forwarded through http://iamdb.herokuapp.com');
+}
+
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 

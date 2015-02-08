@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var Game = require('./game.model');
 var config = require('../../config/environment');
-var auth = require('../../auth/auth.service');
+var tmdbService = require('../../components/tmdb/tmdb.service');
 
 // Get list of games
 exports.index = function(req, res) {
@@ -38,20 +38,18 @@ exports.create = function(req, res) {
 };
 
 // Updates an existing game in the DB.
-// exports.update = function(req, res) {
-//   if(req.body._id) { delete req.body._id; }
-//   console.log('params', req.params.id, req.body);
-//   Game.findById(req.params.id, function (err, game) {
-//     if (err) { return handleError(res, err); }
-//     if (!game) { return res.send(404); }
-//     var updated = _.merge(game, req.body);
-//     console.log('updated', game);
-//     updated.save(function (err) {
-//       if (err) { return handleError(res, err); }
-//       return res.json(200, game);
-//     });
-//   });
-// };
+exports.update = function(req, res) {
+  // if(req.body._id) { delete req.body._id; }
+  Game.findOne({name: req.params.name}, function (err, game) {
+    if (err) { return handleError(res, err); }
+    if (!game) { return res.send(404); }
+    _.merge(game, req.body);
+    game.save(function (err) {
+      if (err) { return handleError(res, err); }
+      return res.json(200, game);
+    });
+  });
+};
 
 exports.joinGame = function (req, res) {
   console.log('Player ' + req.body.email + ' is joining game ' + req.params.name);
@@ -91,6 +89,31 @@ exports.destroy = function(req, res) {
       return res.send(204);
     });
   });
+};
+
+exports.validate = function (req, res) {
+  var gameName = req.params.name,
+    turn = req.body.turn;
+  tmdbService.validate(gameName, turn, function (err, validatedTurn) {
+    if (err) return handleError(res, err);
+    addToHistory(gameName, validatedTurn);
+  });
+
+  function addToHistory (name, turn) {
+    Game.findOne(
+      {name: gameName},
+      function (err, game) {
+        if (err) return handleError(res, err);
+        game.history.unshift(turn);
+        game.save();
+        res.json(200, game);
+      }
+    );
+  }
+
+  function onFail () {
+    handleError()
+  }
 };
 
 function handleError(res, err) {

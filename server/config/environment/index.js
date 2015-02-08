@@ -26,7 +26,7 @@ var all = {
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
-    session: 'iamdb-secret'
+    session: process.env.SESSION_SECRET
   },
 
   // List of user roles
@@ -59,6 +59,11 @@ var all = {
     clientID:     process.env.GOOGLE_ID || 'id',
     clientSecret: process.env.GOOGLE_SECRET || 'secret',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  },
+
+  tmdb: {
+    baseUrl: process.env.TMDB_BASE_URL,
+    apiKey: process.env.TMDB_KEY
   }
 };
 

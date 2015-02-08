@@ -2,24 +2,31 @@ div(ng-include='"components/navbar/navbar.html"')
 
 .container(ng-init='fetchGames()')
   .row
-    form.create-game-form
-      label Create a new game
-      p.input-group
-        input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
-        span.input-group-btn
-          button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
+    .col-sm-12
+      form.create-game-form
+        label Create a new game
+        p.input-group
+          input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
+          span.input-group-btn
+            button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
   .row
     .col-xs-12.col-sm-3
-      .gamecordion
+      div.btn-group.dropdown.pull-right
+        button.btn.btn-default.dropdown-toggle(type='button')
+          span.caret
+        ul.dropdown-menu(role='menu')
+          li(ng-click='gameFilter.remove()')
+            a(href='#') All Games
+          li(ng-click='gameFilter.apply(currentUser)')
+            a(href='#') My Games
+
+      .gamecordion.well
         a.gamecordion__game(ng-repeat='game in games', ui-sref='play.game({id: game.name})')
           b.gamecordion__gametitle {{game.name}}
     .col-xs-12.col-sm-9
       .game
         .game__view(ui-view='')
           //- Game will populate here on expand
-
-
-
 
 footer.footer
   .container

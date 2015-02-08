@@ -12,9 +12,8 @@ function PlayGameCtrl(
   $scope.game = {};
 
   Play.fetchGame($stateParams.id, function (game) {
-    console.log('game', game);
     $scope.game = game;
-    // socket.syncUpdates('game', $scope.game);
+    socket.syncUpdates('game', $scope.game);
   });
 
   $scope.playerIsHost = function (player) {
@@ -27,12 +26,12 @@ function PlayGameCtrl(
 
   $scope.joinGame = function (game) {
     Play.joinGame(game, function (game) {
-      console.log('joined game', game);
+      socket.joinRoom(game.name);
     });
   };
 
   $scope.$on('$destroy', function () {
-    // socket.unsyncUpdates('game');
+    socket.unsyncUpdates('game');
   });
 }
 
