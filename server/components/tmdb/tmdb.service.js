@@ -55,6 +55,7 @@ exports.search = function (req, cb) {
  * @return {void}
  */
 exports.configuration = function (req, cb) {
+  cb = cb || _.noop;
   var options = {
     method: 'GET',
     url: baseUrl + '/configuration',

@@ -9,9 +9,13 @@ The game starts with Wes providing a movie title or actor.  Let's say Wes said *
 =====
 
 ###Setup and Build
-Once you fork and clone, run
+Once you fork and clone, [install MongoDB](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) if you haven't already, then run
 ```
 npm install
+```
+then
+```
+mongod
 ```
 then
 ```
