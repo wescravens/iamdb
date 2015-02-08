@@ -13,11 +13,11 @@ Once you fork and clone, [install MongoDB](http://docs.mongodb.org/manual/tutori
 ```
 npm install
 ```
-then
+then, startup a mongo daemon on another process
 ```
 mongod
 ```
-then
+then run
 ```
 grunt serve
 ```
