@@ -3,12 +3,7 @@ var request = require('request');
 var config = require('../../config/environment');
 var apiParams = {api_key: config.tmdb.apiKey};
 var baseUrl = config.tmdb.baseUrl;
-var configUrl = '/configuration';
 
-if (!apiParams.api_key && process.env.NODE_ENV === 'development') {
-  baseUrl = 'http://iamdb.herokuapp.com/';
-  configUrl = '/search/configuration';
-}
 
 /**
  * Validates a TMDB actor or movie
@@ -49,7 +44,7 @@ exports.search = function (req, cb) {
 exports.configuration = function (req, cb) {
   var options = {
     method: 'GET',
-    url: baseUrl + configUrl,
+    url: baseUrl + '/configuration',
     qs: apiParams,
     headers: {'x-forwarded-for': req.ip}
   };
