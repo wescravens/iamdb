@@ -7,8 +7,7 @@ var baseUrl = config.tmdb.baseUrl;
 
 /**
  * Validates a TMDB actor or movie
- * @param  {String}   gameName Name of the game
- * @param  {Object}   turn     Object containing the question, type, and user input
+ * @param  {Object}   req     Express request from api controller
  * @param  {Function} cb       Callback function when the TMDB request(s) and validations complete/error
  * @return {void}
  */
