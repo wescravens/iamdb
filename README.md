@@ -23,6 +23,9 @@ grunt serve
 ```
 
 =====
+_You will need a [TMDB](https://www.themoviedb.org/documentation/api) api key for the search forwarding and game validation to work.  [Contact me](https://github.com/wescravens) directly for the key or request your own key and put it in your `server/config/local.env.js`_
+
+=====
 
 ###The Stack
 **Client**

@@ -18,6 +18,9 @@ module.exports = {
   GOOGLE_ID:        'app-id',
   GOOGLE_SECRET:    'secret',
 
+  TMDB_KEY: '',
+  TMDB_BASE_URL: 'http://api.themoviedb.org/3',
+
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: 'app*,http*,socket.io:socket'
 };
