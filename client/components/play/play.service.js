@@ -19,7 +19,7 @@ function Play(
       return Game
         .save(
           game,
-          function (game) { return cb(game); },
+          function (game) { return cb(null, game); },
           function (err) { return cb(err); }
         )
         .$promise
@@ -37,7 +37,7 @@ function Play(
       return Game
         .get(
           {name: gameName},
-          function (game) { return cb(game); },
+          function (game) { return cb(null, game); },
           function (err) { return cb(err); }
         )
         .$promise
@@ -53,7 +53,7 @@ function Play(
 
       return Game
         .query(
-          function (games) { return cb(games); },
+          function (games) { return cb(null, games); },
           function (err) { return cb(err); }
         )
         .$promise
@@ -70,12 +70,9 @@ function Play(
 
       return Game
         .join(
-          {
-            name: game.name,
-            controller: 'join'
-          },
+          {name: game.name},
           Auth.getCurrentUser(),
-          function (game) { return cb(game); },
+          function (game) { return cb(null, game); },
           function (err) { return cb(err); }
         )
         .$promise
@@ -92,12 +89,9 @@ function Play(
 
       return Game
         .leave(
-          {
-            name: game.name,
-            controller: 'leave'
-          },
+          {name: game.name},
           Auth.getCurrentUser(),
-          function (game) { return cb(game); },
+          function (game) { return cb(null, game); },
           function (err) { return cb(err); }
         )
         .$promise
@@ -114,23 +108,25 @@ function Play(
 
       return Game
         .remove(
-          game,
+          {name: game.name},
           function () { return cb(); },
           function (err) { return cb(err); }
         )
         .$promise
       ;
     },
-    sendState: function (game, callback) {
+
+    validate: function (game, turn, callback) {
       var cb = callback || angular.noop;
 
       return Game
-        .update(
-          {name: game.name},
-          game,
-          function () { return cb(); },
+        .validate(
+          {game: game.name},
+          turn,
+          function () { return cb(null, game); },
           function (err) { return cb(err); }
-        ).$promise
+        )
+        .$promise
       ;
     }
   };

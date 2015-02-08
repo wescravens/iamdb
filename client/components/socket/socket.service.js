@@ -19,16 +19,16 @@ angular.module('iamdbApp')
       socket: socket,
 
       /**
-       * Register listeners to sync an array with updates on a model
+       * Register listeners to sync an obj with updates on a model
        *
-       * Takes the array we want to sync, the model name that socket updates are sent from,
+       * Takes the obj we want to sync, the model name that socket updates are sent from,
        * and an optional callback function after new items are updated.
        *
        * @param {String} modelName
-       * @param {Array} array
+       * @param {Object} obj
        * @param {Function} cb
        */
-      syncUpdates: function (modelName, array, cb) {
+      syncUpdates: function (modelName, obj, cb) {
 
         cb = cb || angular.noop;
 
@@ -36,29 +36,32 @@ angular.module('iamdbApp')
          * Syncs item creation/updates on 'model:save'
          */
         socket.on(modelName + ':save', function (item) {
-          // var oldItem = _.find(array, {_id: item._id});
-          // var index = array.indexOf(oldItem);
-          // var event = 'created';
+          if (!obj.slice) {
+            obj = item;
+            cb(item);
+            return;
+          }
 
-          // // replace oldItem if it exists
-          // // otherwise just add item to the collection
-          // if (oldItem) {
-          //   array.splice(index, 1, item);
-          //   event = 'updated';
-          // } else {
-          //   array.push(item);
-          // }
+          var oldItem = _.find(obj, {_id: item._id});
+          var index = obj.indexOf(oldItem);
 
-          cb(item) ;
+          // replace oldItem if it exists
+          // otherwise just add item to the collection
+          if (oldItem) {
+            obj.splice(index, 1, item);
+          } else {
+            obj.push(item);
+          }
+
+          cb(item);
         });
 
         /**
          * Syncs removed items on 'model:remove'
          */
         socket.on(modelName + ':remove', function (item) {
-          var event = 'deleted';
-          _.remove(array, {_id: item._id});
-          cb(event, item, array);
+          _.remove(obj, {_id: item._id});
+          cb(event, item, obj);
         });
       },
 

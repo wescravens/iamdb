@@ -7,12 +7,13 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', controller.index);
+router.get('/configuration', auth.isAuthenticated(), controller.configuration);
 router.get('/:name', controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);
+router.post('/:name/validate', auth.isAuthenticated(), controller.validate);
 router.put('/:name', auth.isAuthenticated(), controller.update);
 router.put('/:name/join', auth.isAuthenticated(), controller.joinGame);
 router.patch('/:name/join', auth.isAuthenticated(), controller.joinGame);
-router.post('/:name/validate', auth.isAuthenticated(), controller.validate);
 // router.put('/:id', controller.update);
 // router.patch('/:id', controller.update);
 router.delete('/:name', auth.isAuthenticated(), controller.destroy);

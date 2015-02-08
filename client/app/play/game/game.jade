@@ -5,3 +5,31 @@
     li(ng-repeat='player in game.players')
       p {{player.name}}
         span(ng-show='playerIsHost(player)') &nbsp;(Host)
+  form.create-game-form
+    p
+      strong Search TMDB
+    label
+      input(type='radio', name='searchOption', ng-model='searchController', value='person')
+      | &nbsp;Actor
+    br
+    label
+      input(type='radio', name='searchOption', ng-model='searchController', value='movie')
+      | &nbsp;Movie
+    p.input-group
+      input.form-control(type='text', placeholder='Search TMDB', ng-model='query')
+      span.input-group-btn
+        button.btn.btn-primary(type='submit', ng-click='searchTMDB()') Search
+
+  .results.row
+    .movie-result(ng-if='searchController == "movie"')
+      .result.col-md-4(ng-repeat='result in results')
+        p {{result.original_title}}
+          img(ng-src='{{baseImageUrl}}{{result.poster_path}}')
+
+    .person-result(ng-if='searchController == "person"')
+      .result(ng-repeat='result in results')
+        strong {{result.name}}
+        p(ng-if='result.name') Known For:
+        .col-md-4(ng-repeat='movie in result.known_for')
+          p {{movie.original_title}}
+          img(ng-src='{{baseImageUrl}}{{movie.poster_path}}')

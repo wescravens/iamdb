@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var q = require('q');
 var Game = require('./game.model');
 var config = require('../../config/environment');
 var tmdbService = require('../../components/tmdb/tmdb.service');
@@ -32,7 +33,10 @@ exports.show = function(req, res) {
 // Creates a new game in the DB.
 exports.create = function(req, res) {
   Game.create(req.body, function(err, game) {
-    if (err) { return handleError(res, err); }
+    if (err && err.code === 11000) {
+      return res.json(409, {message: 'Game already exists'});
+    }
+    if (err) return handleError(res, err);
     return res.json(201, game);
   });
 };
@@ -91,32 +95,46 @@ exports.destroy = function(req, res) {
   });
 };
 
-exports.validate = function (req, res) {
-  var gameName = req.params.name,
-    turn = req.body.turn;
-  tmdbService.validate(gameName, turn, function (err, validatedTurn) {
-    if (err) return handleError(res, err);
-    addToHistory(gameName, validatedTurn);
+exports.configuration = function (req, res) {
+  tmdbService.configuration(req, function (err, json, status) {
+    if (err) return res.send(err.statusCode);
+    res.json(status, json);
   });
+};
 
-  function addToHistory (name, turn) {
+exports.validate = function (req, res) {
+  q.fcall(tmdbService.validate, req)
+    .then(addToHistory)
+    .then(function (game) {
+      res.json(200, game);
+    })
+    .fail(function (err) {
+      handleError(res, err);
+    })
+  ;
+
+  function addToHistory (req, validTurn, cb) {
+    var deferred = q.defer();
+    cb = cb || _.noop;
     Game.findOne(
-      {name: gameName},
+      {name: req.params.name},
       function (err, game) {
-        if (err) return handleError(res, err);
-        game.history.unshift(turn);
+        if (err) {
+          cb(err);
+          deferred.reject(err);
+          return;
+        }
+
+        game.history.unshift(validTurn);
         game.save();
-        res.json(200, game);
+        cb(null, game);
+        deferred.resolve(game);
       }
     );
-  }
-
-  function onFail () {
-    handleError()
+    return deferred;
   }
 };
 
 function handleError(res, err) {
-  console.log('error', err);
   return res.send(500, err);
 }

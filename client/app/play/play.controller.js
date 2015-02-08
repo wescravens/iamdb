@@ -14,17 +14,13 @@ function PlayCtrl(
   $scope.currentUserGames = [];
   $scope.currentUser = Auth.getCurrentUser();
 
-  function filterCurrentUserGames (games) {
-    if (_.isEmpty($scope.currentUser)) {return;}
-    $scope.currentUserGames = _.filter(games, function (game) {
-      return _.indexOf(game.players, $scope.currentUser._id) !== -1;
-    });
-  }
-
   $scope.fetchGames = function () {
-    Play.fetchGames(function (games) {
+    Play.fetchGames(function (err, games) {
+      if (err) return handleError(err); // TODO: handle err
       $scope.games = games;
-      socket.syncUpdates('game', $scope.games);
+      socket.syncUpdates('game', $scope.games, function (item) {
+        console.log('socket emit save:game on ', item);
+      });
     });
   };
 
@@ -32,24 +28,20 @@ function PlayCtrl(
     return !!_.find(game.players, {_id: user._id});
   };
 
-  $scope.joinGame = function (game) {
-    Play.joinGame(game, function () {
-      console.log('joined game', game);
-    });
-  };
-
-  $scope.leaveGame = function (game) {
-    Play.leaveGame(game, function (game) {
-      console.log('left game', game);
-    });
-  };
-
+  $scope.errorMessage = '';
   $scope.createGame = function () {
     var newGame = {
       name: $scope.gameName,
       players: [$scope.currentUser._id]
     };
-    Play.createGame(newGame);
+    Play.createGame(newGame, function (err) {
+      if (err.status === 409) {
+        $scope.errorMessage = 'Game already exists';
+        return;
+      }
+      if (err)
+      $scope.errorMessage = '';
+    });
   };
 
   $scope.filter = {};
@@ -70,6 +62,10 @@ function PlayCtrl(
   $scope.$on('$destroy', function () {
     socket.unsyncUpdates('game');
   });
+
+  function handleError(err) {
+    console.log('$resource error: ', err);
+  }
 }
 
 angular.module('iamdbApp')

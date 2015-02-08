@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var q = require('q');
 var request = require('request');
 var config = require('../../config/environment');
 var apiParams = {api_key: config.tmdb.apiKey};
@@ -12,18 +13,32 @@ var baseUrl = config.tmdb.baseUrl;
  * @param  {Function} cb       Callback function when the TMDB request(s) and validations complete/error
  * @return {void}
  */
-exports.validate = function (gameName, turn, cb) {
+exports.validate = function (req, cb) {
   cb = cb || _.noop;
+  var deferred = q.defer();
+  var turn = req.body;
   var controller = turn.question.isActor ? '/people/{id}/movie_credits' : '/movie/{id}/credits';
-  request.get(baseUrl + controller, apiParams)
-    .on('response', function (response) {
-      console.log('response', response);
-      cb(null, response);
-    })
-    .on('error', function (err) {
+  console.log('turn', turn, typeof turn.input);
+  controller.replace('{id}', turn.input);
+
+  var options = {
+    method: 'GET',
+    url: baseUrl + controller,
+    qs: _.assign({}, req.query, apiParams)
+  };
+
+  request(options, function (err, response, body) {
+    if (err) {
       cb(err);
-    })
-  ;
+      deferred.reject(err);
+      return;
+    }
+    cb(null, body);
+    var validatedTurn; // TODO: actual validation :)
+    deferred.resolve(req, validatedTurn);
+  });
+
+  return deferred;
 };
 
 /**
@@ -35,11 +50,10 @@ exports.validate = function (gameName, turn, cb) {
  */
 exports.search = function (req, cb) {
   cb = cb || _.noop;
-  var qs =  _.merge(req.query, apiParams);
   var options = {
     method: 'GET',
     url: baseUrl + '/search/' + req.params.controller,
-    qs: qs,
+    qs: _.assign({}, req.query, apiParams),
     headers: {'x-forwarded-for': req.ip}
   };
   request(options, function (err, response, body) {

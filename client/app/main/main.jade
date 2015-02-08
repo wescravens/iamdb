@@ -17,13 +17,7 @@ header#banner.hero-unit
             li(ng-repeat="player in players")
               p {{player.name}}
         .col-md-8
-          button.btn.btn-primary(ng-click='myTurn()') My Turn
-          form.create-game-form
-            label Search TMDB
-            p.input-group
-              input.form-control(type='text', placeholder='Search TMDB', ng-model='query')
-              span.input-group-btn
-                button.btn.btn-primary(type='submit', ng-click='searchTMDB()') Search
+          //- button.btn.btn-primary(ng-click='myTurn()') My Turn
 
 footer.footer
   .container

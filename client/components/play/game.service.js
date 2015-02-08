@@ -14,14 +14,12 @@ function GameResource ($resource) {
         controller: 'leave'
       }
     },
-    history: {
-      method: 'PUT',
-      params: {
-        controller: 'history'
-      }
-    },
     update: {
       method: 'PUT'
+    },
+    validate: {
+      method: 'POST',
+      controller: 'validate'
     }
   });
 }

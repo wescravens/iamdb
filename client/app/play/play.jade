@@ -9,6 +9,7 @@ div(ng-include='"components/navbar/navbar.html"')
           input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
           span.input-group-btn
             button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
+        p.error {{errorMessage}}
   .row
     .col-xs-12.col-sm-3
       div.btn-group.dropdown.pull-right
