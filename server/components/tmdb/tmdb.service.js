@@ -7,10 +7,10 @@ var baseUrl = config.tmdb.baseUrl;
 
 /**
  * Validates a TMDB actor or movie
- * @param  {[type]}   gameName [description]
- * @param  {[type]}   turn     [description]
- * @param  {Function} cb       [description]
- * @return {[type]}            [description]
+ * @param  {String}   gameName Name of the game
+ * @param  {Object}   turn     Object containing the question, type, and user input
+ * @param  {Function} cb       Callback function when the TMDB request(s) and validations complete/error
+ * @return {void}
  */
 exports.validate = function (gameName, turn, cb) {
   cb = cb || _.noop;
@@ -26,6 +26,13 @@ exports.validate = function (gameName, turn, cb) {
   ;
 };
 
+/**
+ * Forwards search requests by adding the TMDB api key and setting
+ * a forwarding request header to the ip of the original request
+ * @param  {Object}   req Express request from an api controller
+ * @param  {Function} cb  Callback function is called when TMDB responds
+ * @return {void}
+ */
 exports.search = function (req, cb) {
   cb = cb || _.noop;
   var qs =  _.merge(req.query, apiParams);
@@ -41,6 +48,12 @@ exports.search = function (req, cb) {
   });
 };
 
+/**
+ * Requests the configuration JSON from TMDB
+ * @param  {Object}   req Express request from api controller
+ * @param  {Function} cb  Callback function is called when TMDB responds
+ * @return {void}
+ */
 exports.configuration = function (req, cb) {
   var options = {
     method: 'GET',
