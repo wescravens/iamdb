@@ -1,4 +1,4 @@
-// Generated on 2014-12-19 using generator-angular-fullstack 2.0.13
+/* jshint node: true*/
 'use strict';
 
 module.exports = function (grunt) {
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     },
     express: {
       options: {
-        port: process.env.PORT || 9000
+        port: process.env.PORT || 4632
       },
       dev: {
         options: {
@@ -168,7 +168,9 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/*',
             '!<%= yeoman.dist %>/.git*',
             '!<%= yeoman.dist %>/.openshift',
-            '!<%= yeoman.dist %>/Procfile'
+            '!<%= yeoman.dist %>/Procfile',
+            '!<%= yeoman.dist %>/Dockerfile',
+            '!<%= yeoman.dist %>/fig.yml'
           ]
         }]
       },
@@ -207,7 +209,7 @@ module.exports = function (grunt) {
         options: {
           nodeArgs: ['--debug-brk'],
           env: {
-            PORT: process.env.PORT || 9000
+            PORT: process.env.PORT || 4632
           },
           callback: function (nodemon) {
             nodemon.on('log', function (event) {
@@ -593,7 +595,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', 'open', 'express-keepalive']);
+      return grunt.task.run(['build', 'env:all', 'env:prod', 'express:prod', 'wait', /*'open'*/, 'express-keepalive']);
     }
 
     if (target === 'debug') {
@@ -619,7 +621,7 @@ module.exports = function (grunt) {
       'autoprefixer',
       'express:dev',
       'wait',
-      'open',
+      // 'open',
       'watch'
     ]);
   });

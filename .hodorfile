@@ -1,0 +1,34 @@
+# currently unused, but hodor may be implemented
+# over docker-machine in the future
+containers:
+  web:
+    image: iamdb_web:latest
+    links:
+      db: db
+    ports:
+      - 4632:4632
+      - 35729:35729
+    volumes:
+      - ./server: /var/www/iamdb/server
+      - ./app: /var/www/iamdb/app
+    environment:
+      NODE_ENV: development
+    workdir: "/var/www/iamdb"
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+
+tasks:
+  test:
+    sync_project_to: /var/www/iamdb
+    cmd: "cd /var/www/iamdb && npm test"
+    container: "iamdb_web:latest"
+  npm:
+    sync_project_to: /var/www/iamdb
+    cmd: "cd /var/www/iamdb && npm"
+    container: "iamdb_web:latest"
+  grunt:
+    sync_project_to: /var/www/iamdb
+    cmd: "cd /var/www/iamdb && grunt"
+    container: "iamdb_web:latest"

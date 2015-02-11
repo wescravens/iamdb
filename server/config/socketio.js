@@ -17,10 +17,9 @@ function onConnect(socket) {
     console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
   });
 
-  socket.on('join room', socket.join);
-
   // Insert sockets below
   require('../api/game/game.socket').register(socket);
+  require('../components/turn/turn.socket').register(socket);
 }
 
 module.exports = function (socketio) {

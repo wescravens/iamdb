@@ -54,7 +54,8 @@ function PlayGameCtrl(
       input: id
     };
 
-    $http.post('/api/games/' + $scope.game.name + '/validate', testTurn)
+    // post?
+    $http.get('/api/games/' + $scope.game.name + '/validate', testTurn)
       .success(function (data) {
         console.log('vaidation: ', data);
       })

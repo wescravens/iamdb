@@ -8,13 +8,14 @@ var baseUrl = config.tmdb.baseUrl;
 /**
  * Validates a TMDB actor or movie
  * @param  {Object}   req     Express request from api controller
- * @param  {Function} cb       Callback function when the TMDB request(s) and validations complete/error
+ * @param  {Function} cb      Callback function when the TMDB request(s) and validations complete/error
  * @return {void}
  */
 exports.validate = function (req, cb) {
   cb = cb || _.noop;
   var turn = req.body;
   var actor = turn.input;
+  console.log('turn', turn);
   var movie = turn.question.subject;
 
   if (turn.question.isActor) {
@@ -76,7 +77,7 @@ exports.configuration = function (req, cb) {
     headers: {'x-forwarded-for': req.ip}
   };
   request(options, function (err, response, body) {
-    if (err) cb(err);
+    if (err) return cb(err);
     cb(null, body, response.statusCode);
   });
 };

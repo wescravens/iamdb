@@ -9,9 +9,11 @@ The game starts with Wes providing a movie title or actor.  Let's say Wes said *
 =====
 
 ###Setup and Build
+##### Option 1 (simple)
+
 Once you fork and clone, [install MongoDB](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) if you haven't already, then run
 ```
-npm install
+npm install && bower install
 ```
 then, startup a mongo daemon on another process
 ```
@@ -21,6 +23,20 @@ then run
 ```
 grunt serve
 ```
+
+#####Option 2 (kinda complex)
+
+Clone the repo, download [docker](https://docs.docker.com/installation/mac/), download [fig](http://www.fig.sh/install.html),
+```
+curl -L https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` > /usr/local/bin/fig; chmod +x /usr/local/bin/fig
+```
+download the latest [docker-machine](https://github.com/docker/machine/releases) (currently in alpha) darwin-amd64 release (OS X) or applicable release for your OS.
+Once you download the docker-machine binary, copy it to your `/usr/local/bin/` and run `sudo chmod -R 777 /usr/local/bin/docker-machine`
+
+Start up a boot2docker vm with docker-machine
+`docker-machine create -d virtualbox dev`
+
+Docker images are managed with Fig. From the project root run `fig up`. This will build the `iamdb_web` and `iamdb_db` containers and start them.  If you want them to run in the background as a daemon run `fig up -d` instead.  To stop the containers run `fig stop`.
 
 =====
 _You will need a [TMDB](https://www.themoviedb.org/documentation/api) api key for the search forwarding and game validation to work.  [Contact me](https://github.com/wescravens) directly for the key or request your own key and put it in your `server/config/local.env.js`_

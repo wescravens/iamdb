@@ -1,0 +1,7 @@
+node_modules
+public
+.tmp
+.idea
+dist
+*.log
+**/.git
