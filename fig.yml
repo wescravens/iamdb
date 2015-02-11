@@ -1,0 +1,16 @@
+web:
+  build: .
+  command: sh ./wait_mongo_start.sh
+  links:
+    - db
+  ports:
+    - "4632:4632"
+    - "35729:35729"
+  volumes:
+    - .:/var/www/iamdb
+  environment:
+    NODE_ENV: development
+db:
+  image: mongo:2.6.4
+  ports:
+    - "27017:27017"
