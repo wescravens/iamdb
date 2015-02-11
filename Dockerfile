@@ -3,11 +3,6 @@ MAINTAINER Wes Cravens <wesley.r.cravens@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# purge nodejs
-RUN apt-get --purge remove \
-  nodejs \
-  nodejs-legacy
-
 # update apt-get & install curl
 RUN apt-get update && \
   apt-get install -y curl
@@ -22,21 +17,18 @@ RUN apt-get install -y \
   git \
   openssl \
   build-essential \
-  nodejs=0.11.14 \
+  nodejs \
   node-gyp
 
 # symlink nodejs with node to prevent race conditions with debian node
 RUN ln -s /usr/bin/nodejs /usr/local/bin/node
 
-# install global node deps
+# install global node deps and set node version
 RUN npm i -g \
+  n \
   grunt-cli \
-  bower \
-
-
-# clean and remove build deps
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-# RUN apt-get autoremove -y
+  bower && \
+  n 0.11.14
 
 # set working dir
 WORKDIR /var/www/iamdb
@@ -44,5 +36,6 @@ WORKDIR /var/www/iamdb
 # add all code within context
 ADD . /var/www/iamdb
 
-# install app deps
-RUN npm i
+# install app/client deps
+RUN npm i && \
+  bower install

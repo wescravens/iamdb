@@ -5,3 +5,4 @@ public
 dist
 *.log
 **/.git
+client/bower_components

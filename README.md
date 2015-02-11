@@ -24,7 +24,7 @@ then run
 grunt serve
 ```
 _Notes:_
-_I've run into build problems when using node node <0.11.x.  I recommend installing [n](https://github.com/tj/n) and downloading node 0.11.14.  If you run into build or dependency problems I recommend build the docker images as documented below._
+_I've run into build problems when using node node <0.11.x.  I recommend installing [n](https://github.com/tj/n) and downloading node 0.11.14.  If you run into build or dependency problems I recommend building the docker images as documented below._
 
 _Please contact me or open issues for any problems you run into._
 
