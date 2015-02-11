@@ -46,5 +46,3 @@ ADD . /var/www/iamdb
 
 # install app deps
 RUN npm i
-
-EXPOSE 4632 35729 27017
