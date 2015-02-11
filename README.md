@@ -56,7 +56,7 @@ Running `docker-machine env` will spit out the necessary environment variables f
 
 In VirtualBox settings for the iamdb-dev box, forward the ports `4632`, `27017`, and `35729`.
 
-Docker images are managed with Fig. From the project root run `fig up`. This will build the `iamdb_web` and `iamdb_db` containers and start them.  If you want them to run in the background as a daemon run `fig up -d` instead. You can view logs by running `fig logs`.  To stop the containers run `fig stop`.
+Docker images are managed with Fig. From the project root run `fig up`. This will build the `iamdb_web` and `iamdb_db` containers and start them.  If you want them to run in the background as a daemon run `fig up -d` instead. You can view logs by running `fig logs`.  To stop/start the containers run `fig stop`/`fig start`.
 
 To stop the machine, run `docker-machine stop iamdb-dev` and `docker-machine start iamdb-dev` to start back up. 
 
