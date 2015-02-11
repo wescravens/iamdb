@@ -38,4 +38,4 @@ ADD . /var/www/iamdb
 
 # install app/client deps
 RUN npm i && \
-  bower install
+  bower install --allow-root
