@@ -26,7 +26,9 @@ grunt serve
 
 #####Option 2 (kinda complex)
 
-Clone the repo, download [docker](https://docs.docker.com/installation/mac/), download [fig](http://www.fig.sh/install.html),
+Clone the repo
+download [VirtualBox](https://www.virtualbox.org/wiki/Downloads) if you don't have it installed.
+download [docker](https://docs.docker.com/installation/mac/), download [fig](http://www.fig.sh/install.html),
 ```
 curl -L https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` > /usr/local/bin/fig; chmod +x /usr/local/bin/fig
 ```
