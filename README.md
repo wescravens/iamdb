@@ -23,16 +23,26 @@ then run
 ```
 grunt serve
 ```
+_Notes:_
+_I've run into build problems when using node node <0.11.x.  I recommend installing [n](https://github.com/tj/n) and downloading node 0.11.14.  If you run into build or dependency problems I recommend build the docker images as documented below._
+
+_Please contact me or open issues for any problems you run into._
+
+=====
 
 #####Option 2 (kinda complex)
 
-Clone the repo
-download [VirtualBox](https://www.virtualbox.org/wiki/Downloads) if you don't have it installed.
-download [docker](https://docs.docker.com/installation/mac/), download [fig](http://www.fig.sh/install.html),
+Clone the repo.
+
+Download [VirtualBox](https://www.virtualbox.org/wiki/Downloads) if you don't have it installed.
+
+Download [docker](https://docs.docker.com/installation/mac/), download [fig](http://www.fig.sh/install.html),
+
 ```
 curl -L https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` > /usr/local/bin/fig; chmod +x /usr/local/bin/fig
 ```
-download the latest [docker-machine](https://github.com/docker/machine/releases) (currently in alpha) darwin-amd64 release (OS X) or applicable release for your OS.
+
+Download the latest [docker-machine](https://github.com/docker/machine/releases) (currently in alpha) darwin-amd64 release (OS X) or applicable release for your OS.
 Once you download the docker-machine binary, copy it to your `/usr/local/bin/` and run `sudo chmod -R 777 /usr/local/bin/docker-machine`
 
 Start up a boot2docker vm with docker-machine
