@@ -13,13 +13,13 @@ var baseUrl = config.tmdb.baseUrl;
  */
 exports.validate = function (req, cb) {
   cb = cb || _.noop;
-  var turn = req.body;
-  var actor = turn.input;
-  console.log('turn', turn);
-  var movie = turn.question.subject;
+  var turn = req.query;
+  if (!turn || _.isEmpty(turn)) return cb(null, 404, turn);
+  var actor = turn.input = Number(turn.input);
+  var movie = turn.subject = Number(turn.subject);
 
-  if (turn.question.isActor) {
-    actor = turn.question.subject;
+  if (turn.isActor) {
+    actor = turn.subject;
     movie = turn.input
   }
 
@@ -37,7 +37,7 @@ exports.validate = function (req, cb) {
     var reference = _.find(body.cast, {id: movie});
     turn.valid = !!reference;
     turn.character = turn.valid ? reference.character : '';
-    cb(null, turn);
+    cb(null, 200, turn);
   });
 };
 

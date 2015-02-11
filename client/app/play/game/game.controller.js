@@ -47,15 +47,16 @@ function PlayGameCtrl(
   $scope.testValidation = function (id) {
     var testTurn = {
       player: $scope.currentUser._id,
-      question: {
-        subject: 17051, // james franco
-        isActor: true
-      },
+      subject: 17051, // james franco
+      isActor: true,
       input: id
     };
 
-    // post?
-    $http.get('/api/games/' + $scope.game.name + '/validate', testTurn)
+    $http({
+      url: '/api/games/' + $scope.game.name + '/validate',
+      method: 'GET',
+      params: testTurn
+    })
       .success(function (data) {
         console.log('vaidation: ', data);
       })

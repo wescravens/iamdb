@@ -103,14 +103,14 @@ exports.configuration = function (req, res) {
 };
 
 exports.validate = function (req, res) {
-  tmdbService.validate(req, function (err, validatedTurn) {
+  tmdbService.validate(req, function (err, statusCode, validatedTurn) {
     Game.findOne(
       {name: req.params.name},
       function (err, game) {
         if (err) return handleError(res, err);
         game.history.unshift(validatedTurn);
         game.save();
-        res.json(200, validatedTurn);
+        res.json(statusCode, validatedTurn);
       }
     );
   });

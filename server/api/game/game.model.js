@@ -11,10 +11,8 @@ var GameSchema = new Schema({
   active: Boolean,
   history: [{
     player: {type: ObjectId, ref: 'User'},
-    question: {
-      subject: Number,
-      isActor: Boolean
-    },
+    subject: Number,
+    isActor: Boolean,
     input: Number,
     valid: {type: Boolean, default: false},
     character: String
