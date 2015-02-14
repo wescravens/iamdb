@@ -43,6 +43,11 @@ var all = {
     }
   },
 
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
+  },
+
   facebook: {
     clientID:     process.env.FACEBOOK_ID || 'id',
     clientSecret: process.env.FACEBOOK_SECRET || 'secret',

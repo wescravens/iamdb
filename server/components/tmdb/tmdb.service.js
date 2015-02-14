@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var q = require('q');
+var comb = require('comb');
 var request = require('request');
 var config = require('../../config/environment');
 var apiParams = {api_key: config.tmdb.apiKey};
@@ -20,7 +20,7 @@ exports.validate = function (req, cb) {
 
   if (turn.isActor) {
     actor = turn.subject;
-    movie = turn.input
+    movie = turn.input;
   }
 
   var controller = '/person/' + actor + '/movie_credits'
@@ -48,18 +48,21 @@ exports.validate = function (req, cb) {
  * @param  {Function} cb  Callback function is called when TMDB responds
  * @return {void}
  */
-exports.search = function (req, cb) {
-  cb = cb || _.noop;
-  var options = {
+exports.search = function (options) {
+  var ret = new comb.Promise();
+  var reqOptions = {
     method: 'GET',
-    url: baseUrl + '/search/' + req.params.controller,
-    qs: _.assign({}, req.query, apiParams),
-    headers: {'x-forwarded-for': req.ip}
+    url: baseUrl + '/search/' + options.collection,
+    qs: _.assign({}, options.query, apiParams)
   };
-  request(options, function (err, response, body) {
-    if (err) cb(err);
-    cb(null, body, response.statusCode);
+  request(reqOptions, function (err, response, body) {
+    if (err) ret.errback(err);
+    if (response.statusCode !== 200) {
+      ret.errback(response.statusCode);
+    }
+    ret.callback(body);
   });
+  return ret.promise();
 };
 
 /**

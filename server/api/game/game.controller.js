@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var q = require('q');
 var Game = require('./game.model');
 var config = require('../../config/environment');
 var tmdbService = require('../../components/tmdb/tmdb.service');

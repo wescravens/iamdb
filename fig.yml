@@ -3,6 +3,7 @@ web:
   command: sh ./wait_mongo_start.sh
   links:
     - db
+    - redis
   ports:
     - "4632:4632"
     - "35729:35729"
@@ -14,3 +15,7 @@ db:
   image: mongo:2.6.4
   ports:
     - "27017:27017"
+redis:
+  image: redis
+  ports:
+    - "6379:6379"

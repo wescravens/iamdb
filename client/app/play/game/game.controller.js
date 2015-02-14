@@ -40,12 +40,12 @@ function PlayGameCtrl(
   };
 
   $scope.currentUserIsPlayer = function () {
-    return _.find($scope.game.players, {_id: $scope.currentUser._id});
+    return !!_.find($scope.game.players, {_id: $scope.currentUser._id});
   };
 
   // TODO: remove this
   $scope.testValidation = function (id) {
-    var testTurn = {
+    var turn = {
       player: $scope.currentUser._id,
       subject: 17051, // james franco
       isActor: true,
@@ -55,7 +55,7 @@ function PlayGameCtrl(
     $http({
       url: '/api/games/' + $scope.game.name + '/validate',
       method: 'GET',
-      params: testTurn
+      params: turn
     })
       .success(function (data) {
         console.log('vaidation: ', data);
