@@ -9,17 +9,23 @@ The game starts with Wes providing a movie title or actor.  Let's say Wes said *
 =====
 
 ###Setup and Build
-##### Option 1 (simple)
+##### Option 1
 
-Once you fork and clone, [install MongoDB](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) if you haven't already, then run
+Once you fork and clone, [install MongoDB](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/) and [redis](http://redis.io/topics/quickstart).
+
+Install server/client deps
 ```
 npm install && bower install
 ```
-then, startup a mongo daemon on another process
+start mongo
 ```
 mongod
 ```
-then run
+start redis
+```
+redis-server
+```
+start the app server
 ```
 grunt serve
 ```
@@ -30,79 +36,76 @@ _Please contact me or open issues for any problems you run into._
 
 =====
 
-#####Option 2 (kinda complex)
+#####Option 2 (Dockerized)
 
-Clone the repo.
+Fork and clone.
 
 Download [VirtualBox](https://www.virtualbox.org/wiki/Downloads) if you don't have it installed.
 
-Download [Docker](https://docs.docker.com/installation/mac/)
+Install [Docker](https://docs.docker.com/installation/mac/)
 
-Download [Fig](http://www.fig.sh/install.html)
+Install [Fig](http://www.fig.sh/install.html)
 ```
 curl -L https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` > /usr/local/bin/fig; chmod +x /usr/local/bin/fig
 ```
 
-Download the latest [docker-machine](https://github.com/docker/machine/releases) (currently in alpha) darwin-amd64 release (OS X) or applicable release for your OS.
+Download the latest [docker-machine](https://github.com/docker/machine/releases) darwin-amd64 release (OS X) or applicable release for your OS.
 Once you download the docker-machine binary, copy it to your `/usr/local/bin/` and run
-```sudo chmod -R 777 /usr/local/bin/docker-machine```
+```chmod +x /usr/local/bin/docker-machine```
 
-Start up a boot2docker vm with docker-machine
+Create and start a boot2docker vm with docker-machine
 ```
 docker-machine create -d virtualbox iamdb-dev
 ```
 
-Running `docker-machine env` will spit out the necessary environment variables for running containers.
+Running `docker-machine env` will spit out the necessary environment variables for running the boot2docker vm.
 
-In VirtualBox settings for the iamdb-dev box, forward the ports `4632`, `27017`, and `35729`.
+In VirtualBox settings for the iamdb-dev box, forward the ports `4632`, `6379`, `27017`, and `35729`.
 
-Docker images are managed with Fig. From the project root run `fig up`. This will build the `iamdb_web` and `iamdb_db` containers and start them.  If you want them to run in the background as a daemon run `fig up -d` instead. You can view logs by running `fig logs`.  To stop/start the containers run `fig stop`/`fig start`.
+Docker images are managed with Fig. From the project root run `fig up`. This will build the `iamdb_web` and `iamdb_db` containers and start them.  If you want them to run in the background run `fig up -d` instead. You can view logs by running `fig logs`.  To stop/start the containers run `fig stop`/`fig start`.
 
-To stop the machine, run `docker-machine stop iamdb-dev` and `docker-machine start iamdb-dev` to start back up. 
-
-_Note: I've run into problems resarting stopped machines. If this happens, remove the machine and recreate it._
-
-```
-docker-machine rm iamdb-dev && docker-machine create -d virtualbox iamdb-dev
-```
+To stop the boot2docker vm, run `docker-machine stop iamdb-dev` and `docker-machine start iamdb-dev` to start back up.
 
 ###The Stack
 **Client**
-- Angular 1.3.7
-    - Bootstrap
-    - Cookies
-    - Mocks (dev)
-    - Resource
-    - Sanitize
-    - Scenario (dev)
-    - Socket IO
-    - UI Router
-- Bootstrap 3.1.1
-- Font Awesome 4.2.0
-- jQuery 1.11.2
-- Jade 1.2.0
-- Lodash 2.4.1
-- Stylus 0.49.0
+- angular 1.3.7
+    - bootstrap
+    - cookies
+    - mocks (dev)
+    - resource
+    - sanitize
+    - scenario (dev)
+    - socket.io
+    - ui.router
+- bootstrap 3.1.1
+- font-awesome 4.2.0
+- jquery 1.11.2
+- jade 1.2.0
+- stylus 0.49.0
+- lodash 2.4.1
 
 **Server**
-- Node >=0.10.0
-- Connect
-    - Mongo
-- Express
-    - JWT
-    - Session
-- Jade
-- Karma (dev)
-    - PhantomJS
-- Lodash
-- Mongoose
-- Passport
+- node 0.11.14
+- express
+    - jwt
+- connect
+- karma (dev)
+    - phantomJS
+- lodash
+- comb
+- mongoose
+- passport
     - Facebook
-    - Google OAuth
+    - Google
     - Local
     - Twitter
-- Should
-- Socket IO
+- socket.io
+  - client
+  - jwt
+  - redis
+
+**DB**
+- mongo
 
 =====
 _Notes:_
