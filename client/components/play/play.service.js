@@ -1,5 +1,8 @@
 'use strict';
 
+angular.module('iamdbApp')
+  .factory('Play', Play);
+
 function Play(
   $stateParams,
   $q,
@@ -131,6 +134,3 @@ function Play(
     }
   };
 }
-
-angular.module('iamdbApp')
-  .factory('Play', Play);

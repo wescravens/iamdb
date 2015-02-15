@@ -1,5 +1,8 @@
 'use strict';
 
+angular.module('iamdbApp')
+  .service('Game', GameResource);
+
 function GameResource ($resource) {
   return $resource('/api/games/:name/:controller', {}, {
     join: {
@@ -23,6 +26,3 @@ function GameResource ($resource) {
     }
   });
 }
-
-angular.module('iamdbApp')
-  .service('Game', GameResource);

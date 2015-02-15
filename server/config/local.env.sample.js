@@ -21,6 +21,9 @@ module.exports = {
   TMDB_KEY: '',
   TMDB_BASE_URL: 'http://api.themoviedb.org/3',
 
+  REDIS_HOST: 'localhost',
+  REDIS_PORT: 6379,
+
   // Control debug level for modules using visionmedia/debug
   DEBUG: 'app*,http*,socket.io:socket'
 };
