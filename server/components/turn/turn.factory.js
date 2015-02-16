@@ -8,7 +8,7 @@ exports = function (options) {
 
 var Turn = comb.define({
   instance: {
-    duration: 35000, // extra 5 seconds to account for request times
+    duration: 35000, // extra 5 seconds to account for socket lag
     startTime: null,
     valid: false,
     character: null,
@@ -31,7 +31,7 @@ var Turn = comb.define({
       return this.promise;
     },
     end: function (reason) {
-      reason = reason || 'time elapsed';
+      reason = reason || 'timeout';
       this.pending = false;
       clearTimeout(this.timeout);
       this.result = reason;
@@ -41,7 +41,7 @@ var Turn = comb.define({
       // return true to stop turn
       if (!date || !date instanceof Date) return true;
       return difference(date, this.startTime, 'millisecond') >= this.duration;
-    },
+    }
   }
 });
 

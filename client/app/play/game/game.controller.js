@@ -7,6 +7,7 @@ function PlayGameCtrl(
   $http, // temporary
   socket,
   Play,
+  Turn,
   Auth
 ){
   $scope.currentUser = Auth.getCurrentUser();

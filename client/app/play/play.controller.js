@@ -1,13 +1,9 @@
 'use strict';
 
 function PlayCtrl(
-  $http,
   $scope,
-  $log,
-  $q,
   Auth,
   Play,
-  dropdownService,
   socket
 ){
   $scope.games = [];

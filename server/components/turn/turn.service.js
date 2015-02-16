@@ -1,6 +1,5 @@
 var turnFactory = require('./turn.factory');
 var tmdbService = require('../tmdb/tmdb.service');
-var _ = require('lodash');
 var search;
 
 exports.create = function (options) {
@@ -8,12 +7,12 @@ exports.create = function (options) {
 };
 
 exports.answer = function (turn) {
-  turn.input = turn.input;
   console.log('turn answer', turn);
+  turn.end('answered');
   return tmdbService.validate(turn);
 };
 
 exports.challenge = function (turn) {
-  turn.end();
+  turn.end('challenged');
   return turn;
 };

@@ -23,6 +23,10 @@ function GameResource ($resource) {
     validate: {
       method: 'POST',
       controller: 'validate'
+    },
+    getConfiguration: {
+      method: 'GET',
+      controller: 'configuration'
     }
   });
 }

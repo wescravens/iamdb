@@ -55,13 +55,13 @@ exports.search = function (req) {
   var reqOptions = {
     method: 'GET',
     url: baseUrl + '/search/' + req.params.controller,
-    qs: _.assign({}, req.body.query, apiParams),
+    qs: _.assign({}, req.query, apiParams),
     headers: {'x-forwarded-for': req.ip}
   };
   request(reqOptions, function (err, response, body) {
-    if (err) ret.errback(err);
+    if (err) return ret.errback(err);
     if (response.statusCode !== 200) {
-      ret.errback(response.statusCode);
+      return ret.errback(response.statusCode);
     }
     ret.callback(body);
   });

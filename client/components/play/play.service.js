@@ -4,7 +4,6 @@ angular.module('iamdbApp')
   .factory('Play', Play);
 
 function Play(
-  $stateParams,
   $q,
   Auth,
   Game
@@ -126,10 +125,19 @@ function Play(
         .validate(
           {game: game.name},
           turn,
-          function () { return cb(null, game); },
+          function (game) { return cb(null, game); },
           function (err) { return cb(err); }
         )
         .$promise
+      ;
+    },
+
+    getConfiguration: function (cb) {
+      Game.getConfiguration(
+          {},
+          function (conf) { return cb(null, conf); },
+          function (err) { return cb(err); }
+        )
       ;
     }
   };

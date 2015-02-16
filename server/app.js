@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var config = require('./config/environment');
 
 // Connect to database
+console.log('mongo uri', config.mongo.uri);
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
 // Populate DB with sample data
