@@ -1,5 +1,8 @@
 'use strict';
 
+angular.module('iamdbApp')
+  .factory('Auth', Auth);
+
 function Auth(
   $location,
   $rootScope,
@@ -150,6 +153,3 @@ function Auth(
     }
   };
 }
-
-angular.module('iamdbApp')
-  .factory('Auth', Auth);

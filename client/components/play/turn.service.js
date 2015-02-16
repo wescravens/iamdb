@@ -10,15 +10,31 @@ function Turn(
 
   return {
     start: function (turn) {
-      io.emit('start turn', turn);
+      io.emit('turn:start', turn);
     },
 
     answer: function (turn) {
-      io.emit('answer turn', turn);
+      io.emit('turn:answer', turn);
     },
 
     challenge: function (turn) {
-      io.emit('challenge turn', turn);
+      io.emit('turn:challenge', turn);
+    },
+
+    onEnd: function (cb) {
+      io.on('turn:end', cb);
+    },
+
+    onError: function (cb) {
+      io.on('turn:error', cb);
+    },
+
+    unSync: function () {
+      socket.removeAllListeners('turn:start');
+      socket.removeAllListeners('turn:answer');
+      socket.removeAllListeners('turn:challenge');
+      socket.removeAllListeners('turn:end');
+      socket.removeAllListeners('turn:error');
     }
   };
 }

@@ -4,6 +4,7 @@ angular.module('iamdbApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
+  'ngStorage',
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap'

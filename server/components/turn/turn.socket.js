@@ -4,9 +4,9 @@ var turnService = require('./turn.service');
 
 exports.register = function (socket) {
   var events = {
-    'start turn': registerTurn,
-    'answer turn': answerTurn,
-    'challenge turn': challengeTurn
+    'turn:start': registerTurn,
+    'turn:answer': answerTurn,
+    'turn:challenge': challengeTurn
   };
 
   forEachKV(events, socket.on);
@@ -30,10 +30,10 @@ exports.register = function (socket) {
   }
 
   function endTurn (turn) {
-    socket.to(turn.game.name).emit('turn end', turn);
+    socket.to(turn.game.name).emit('turn:end', turn);
   }
 
   function errorTurn (err) {
-    socket.to(err.room).emit('turn error', err.message);
+    socket.to(err.room).emit('turn:error', err.message);
   }
 };
