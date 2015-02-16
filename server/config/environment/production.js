@@ -20,5 +20,10 @@ module.exports = {
             process.env.OPENSHIFT_MONGODB_DB_URL+process.env.OPENSHIFT_APP_NAME ||
             process.env.DB_1_PORT_27017_TCP_ADDR ||
             'mongodb://localhost/iamdb'
+  },
+
+  redis: {
+    host: process.env.REDIS_1_PORT_6379_TCP_ADDR || 'localhost',
+    port: process.env.REDIS_1_PORT_6379_TCP_PORT || 'localhost'
   }
 };

@@ -14,14 +14,19 @@ exports.register = function(socket) {
   Game.schema.post('remove', function (game) {
     onRemove(socket, game);
   });
+
+  socket.on('join game', socket.join);
 }
 
 function onSave (socket, game, cb) {
-  socket.emit('game:save', game);
+  // socket.emit('game:save', game);
+  console.log('socket manager', socket.manager.rooms);
+  if (socket.manager.rooms["/" + game.name]) return;
   socket.to(game.name).emit('game:save', game);
 }
 
 function onRemove (socket, game, cb) {
-  socket.emit('game:remove', game);
+  // socket.emit('game:remove', game);
+  if (socket.manager.rooms["/" + game.name]) return;
   socket.to(game.name).emit('game:save', game);
 }

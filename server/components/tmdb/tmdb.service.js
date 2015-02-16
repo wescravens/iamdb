@@ -11,10 +11,10 @@ var baseUrl = config.tmdb.baseUrl;
  * @param  {Function} cb      Callback function when the TMDB request(s) and validations complete/error
  * @return {void}
  */
-exports.validate = function (req, cb) {
-  cb = cb || _.noop;
-  var turn = req.query;
-  if (!turn || _.isEmpty(turn)) return cb(null, 404, turn);
+exports.validate = function (turn) {
+  var ret = new comb.Promise();
+  if (!turn || _.isEmpty(turn))
+    return ret.errback({room: turn.game.name, message: 'Turn object is empty or undefined'});
   var actor = turn.input = Number(turn.input);
   var movie = turn.subject = Number(turn.subject);
 
@@ -28,17 +28,19 @@ exports.validate = function (req, cb) {
   var options = {
     method: 'GET',
     url: baseUrl + controller,
-    qs: _.assign({}, req.query, apiParams)
+    qs: apiParams
   };
 
   request(options, function (err, response, body) {
-    if (err) return cb(err);
+    if (err) return ret.errback({room: turn.game.name, message: err});
     body = JSON.parse(body);
-    var reference = _.find(body.cast, {id: movie});
-    turn.valid = !!reference;
+    var reference = _(body.cast).findWhere({id: movie});
+    turn.isValid = !!reference;
     turn.character = turn.valid ? reference.character : '';
-    cb(null, 200, turn);
+    ret.callback(body);
   });
+
+  return ret.promise();
 };
 
 /**
@@ -48,12 +50,13 @@ exports.validate = function (req, cb) {
  * @param  {Function} cb  Callback function is called when TMDB responds
  * @return {void}
  */
-exports.search = function (options) {
+exports.search = function (req) {
   var ret = new comb.Promise();
   var reqOptions = {
     method: 'GET',
-    url: baseUrl + '/search/' + options.collection,
-    qs: _.assign({}, options.query, apiParams)
+    url: baseUrl + '/search/' + req.params.controller,
+    qs: _.assign({}, req.body.query, apiParams),
+    headers: {'x-forwarded-for': req.ip}
   };
   request(reqOptions, function (err, response, body) {
     if (err) ret.errback(err);

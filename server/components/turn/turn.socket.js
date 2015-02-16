@@ -4,11 +4,36 @@ var turnService = require('./turn.service');
 
 exports.register = function (socket) {
   var events = {
-    'join room': socket.join,
-    'start turn': turnService.start,
-    'answer turn': turnService.answer,
-    'challenge turn': turnService.challenge,
-    'search': turnService.search
+    'start turn': registerTurn,
+    'answer turn': answerTurn,
+    'challenge turn': challengeTurn
   };
+
   forEachKV(events, socket.on);
+
+  function registerTurn (options) {
+    turnService.create(options).start()
+      .then(endTurn)
+    ;
+  }
+
+  function answerTurn (turn) {
+    turnService.answer(turn)
+      .then(endTurn, errorTurn)
+    ;
+  }
+
+  function challengeTurn (turn) {
+    turnService.challenge(turn)
+      .then(endTurn)
+    ;
+  }
+
+  function endTurn (turn) {
+    socket.to(turn.game.name).emit('turn end', turn);
+  }
+
+  function errorTurn (err) {
+    socket.to(err.room).emit('turn error', err.message);
+  }
 };

@@ -4,13 +4,17 @@ var _ = require('lodash');
 var Search = require('./search.model');
 var tmdbService = require('../../components/tmdb/tmdb.service');
 
-// Get list of searchs
 exports.index = function(req, res) {
-  console.log('controller', req.params.controller);
-  tmdbService.search(req, function (err, json, status) {
-    if (err) return res.send(err.statusCode);
-    res.json(status, json);
-  });
+  tmdbService.search(req)
+    .then(respond, handlePromiseErr);
+
+  function respond (body) {
+    res.json(200, body);
+  }
+
+  function handlePromiseErr (err) {
+    res.send(500, err);
+  }
 };
 
 function handleError(res, err) {

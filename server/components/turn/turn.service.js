@@ -1,19 +1,19 @@
-var Turn = require('./turn').Turn;
+var turnFactory = require('./turn').factory;
 var tmdbService = require('../tmdb/tmdb.service');
+var _ = require('lodash');
 var search;
 
-exports.start = function (options) {
-  var turn = new Turn(options).start();
+exports.create = function (options) {
+  return turnFactory(options);
 };
 
-exports.answer = function (answer) {
-
+exports.answer = function (turn) {
+  turn.input = turn.input;
+  console.log('turn answer', turn);
+  return tmdbService.validate(turn);
 };
 
-exports.challenge = function () {
-
-};
-
-exports.search = function (options) {
-  tmdbService.search(options);
+exports.challenge = function (turn) {
+  turn.end();
+  return turn;
 };
