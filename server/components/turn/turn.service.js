@@ -1,4 +1,4 @@
-var turnFactory = require('./turn').factory;
+var turnFactory = require('./turn.factory');
 var tmdbService = require('../tmdb/tmdb.service');
 var _ = require('lodash');
 var search;

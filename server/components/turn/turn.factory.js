@@ -2,7 +2,7 @@ var comb = require('comb');
 var tmdbService = require('../tmdb/tmdb.service');
 var difference = comb.date.difference;
 
-exports.factory = function (options) {
+exports = function (options) {
   return new Turn(options);
 };
 
