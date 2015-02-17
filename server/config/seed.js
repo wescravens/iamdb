@@ -8,22 +8,25 @@
 var User = require('../api/user/user.model');
 var Game = require('../api/game/game.model');
 
-Game.find({}).remove();
 
-User.find({}).remove(function() {
+Game.find({}).remove(function () {
+  console.log('Deleted games');
+});
+
+User.find({}, function (err, docs) {
+  if (docs.length) {return;}
   User.create({
-    provider: 'local',
-    name: 'Test User',
-    email: 'test@test.com',
-    password: 'test'
-  }, {
     provider: 'local',
     role: 'admin',
     name: 'Admin',
     email: 'admin@admin.com',
     password: 'admin'
-  }, function() {
-      console.log('finished populating users');
-    }
-  );
+  }, {
+    provider: 'local',
+    name: 'Test User',
+    email: 'test@test.com',
+    password: 'test'
+  }, function () {
+    console.log('Populated default users');
+  });
 });

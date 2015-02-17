@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('iamdbApp')
-  .factory('Turn', Turn);
+  .service('Turn', Turn);
 
 function Turn(
   socket
@@ -29,12 +29,12 @@ function Turn(
       io.on('turn:error', cb);
     },
 
-    unSync: function () {
-      socket.removeAllListeners('turn:start');
-      socket.removeAllListeners('turn:answer');
-      socket.removeAllListeners('turn:challenge');
-      socket.removeAllListeners('turn:end');
-      socket.removeAllListeners('turn:error');
+    unsyncUpdates: function () {
+      io.removeAllListeners('turn:start');
+      io.removeAllListeners('turn:answer');
+      io.removeAllListeners('turn:challenge');
+      io.removeAllListeners('turn:end');
+      io.removeAllListeners('turn:error');
     }
   };
 }

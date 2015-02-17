@@ -9,8 +9,6 @@ var router = express.Router();
 router.get('/', controller.index);
 
 // TODO: cache this
-router.get('/configuration', auth.isAuthenticated(), controller.configuration);
-// TODO: cache this
 router.get('/:name/validate', auth.isAuthenticated(), controller.validate);
 router.get('/:name', controller.show);
 router.post('/', auth.isAuthenticated(), controller.create);

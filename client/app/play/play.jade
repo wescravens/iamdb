@@ -3,10 +3,10 @@ div(ng-include='"components/navbar/navbar.html"')
 .container(ng-init='fetchGames()')
   .row
     .col-sm-12
-      form.create-game-form
+      form.create-game-form(name='createForm')
         label Create a new game
         p.input-group
-          input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName')
+          input.form-control(type='text', placeholder='Add a new game here.', ng-model='gameName', name='gameNameField')
           span.input-group-btn
             button.btn.btn-primary(type='submit', ng-click='createGame()') Add New
         p.error {{errorMessage}}
@@ -22,8 +22,11 @@ div(ng-include='"components/navbar/navbar.html"')
             a(href='#') My Games
 
       .gamecordion.well
-        a.gamecordion__game(ng-repeat='game in games', ui-sref='play.game({id: game.name})')
-          b.gamecordion__gametitle {{game.name}}
+        span.gamecordion__game(ng-repeat='game in games')
+          a(ui-sref='play.game({id: game.name})')
+            b.gamecordion__gametitle {{game.name}}
+          i.gamecordion__game-host
+            | &nbsp; {{game.host.name}}
     .col-xs-12.col-sm-9
       .game
         .game__view(ui-view='')

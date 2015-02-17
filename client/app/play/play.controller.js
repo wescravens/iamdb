@@ -4,18 +4,19 @@ function PlayCtrl(
   $scope,
   Auth,
   Play,
-  socket
+  socket,
+  util
 ){
   $scope.games = [];
   $scope.currentUserGames = [];
   $scope.currentUser = Auth.getCurrentUser();
 
   $scope.fetchGames = function () {
-    Play.fetchGames(function (err, games) {
-      if (err) return handleError(err); // TODO: handle err
+    Play.fetchGames().then(function (games) {
       $scope.games = games;
-      socket.syncUpdates('game', $scope.games, function (item) {
-        console.log('socket emit save:game on ', item);
+      console.log('games', $scope.games);
+      socket.syncUpdates('game', function (newGame) {
+        util.replaceWhere($scope.games, newGame, 'name');
       });
     });
   };
@@ -26,17 +27,15 @@ function PlayCtrl(
 
   $scope.errorMessage = '';
   $scope.createGame = function () {
-    var newGame = {
-      name: $scope.gameName,
-      players: [$scope.currentUser._id]
-    };
-    Play.createGame(newGame, function (err) {
-      if (err.status === 409) {
+    Play.createGame($scope.gameName, function (err) {
+      if (err && err.status === 409) {
         $scope.errorMessage = 'Game already exists';
+        $scope.gameName = '';
         return;
       }
-      if (err)
+      if (err) return handleError(err);
       $scope.errorMessage = '';
+      $scope.gameName = '';
     });
   };
 
@@ -50,10 +49,6 @@ function PlayCtrl(
       $scope.filter = '';
     }
   };
-
-  setTimeout(function () {
-    console.log('scope', $scope.games);
-  }, 2000);
 
   $scope.$on('$destroy', function () {
     socket.unsyncUpdates('game');

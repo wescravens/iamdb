@@ -6,9 +6,11 @@ angular.module('iamdbApp')
 function Play(
   $q,
   Auth,
+  socket,
   Game
 ){
-
+  var currentUser = Auth.getCurrentUser();
+  var sock = socket.socket;
   return {
     /**
      * Create a new game
@@ -16,16 +18,14 @@ function Play(
      * @param  {Function} callback - Invoked on api response
      * @return {[type]}
      */
-    createGame: function (game, callback) {
-      var cb = callback || angular.noop;
-      return Game
-        .save(
-          game,
-          function (game) { return cb(null, game); },
-          function (err) { return cb(err); }
-        )
-        .$promise
-      ;
+    createGame: function (name) {
+      var defaults = {
+        host: currentUser._id,
+        name: name,
+        players: [currentUser._id]
+      };
+      sock.emit('game:create', defaults);
+      return Game.save(defaults).$promise;
     },
     /**
      * Requests a single game
@@ -69,7 +69,7 @@ function Play(
      */
     joinGame: function (game, callback) {
       var cb = callback || angular.noop;
-
+      sock.emit('game:join', {game: game, player: currentUser});
       return Game
         .join(
           {name: game.name},
@@ -132,13 +132,12 @@ function Play(
       ;
     },
 
-    getConfiguration: function (cb) {
-      Game.getConfiguration(
-          {},
-          function (conf) { return cb(null, conf); },
-          function (err) { return cb(err); }
-        )
-      ;
+    playerIsHost: function (player, game) {
+      return !!_.find(game.players, {_id: player._id});
+    },
+
+    currentUserIsPlayer: function (game) {
+      return !!_.find(game.players, {_id: currentUser._id});
     }
   };
 }

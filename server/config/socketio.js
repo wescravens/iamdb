@@ -20,6 +20,7 @@ function onConnect(socket) {
   // Insert sockets below
   require('../api/game/game.socket').register(socket);
   require('../components/turn/turn.socket').register(socket);
+  require('../components/chat/chat.socket').register(socket);
 }
 
 module.exports = function (socketio) {

@@ -16,6 +16,12 @@ function Search ($resource) {
       params: {
         controller: 'movie'
       }
+    },
+    configuration: {
+      method: 'GET',
+      params: {
+        controller: 'configuration',
+      }
     }
   });
 }

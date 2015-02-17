@@ -7,10 +7,16 @@ var tmdbService = require('../../components/tmdb/tmdb.service');
 
 // Get list of games
 exports.index = function(req, res) {
-  Game.find(function (err, games) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, games);
-  });
+  Game.find({})
+    .populate({
+      path: 'players history host',
+      select: config.userPrivateFields
+    })
+    .exec(function (err, games) {
+      if (err) return handleError(res, err);
+      res.json(200, games);
+    })
+  ;
 };
 
 // Get a single game and add user objects to response
@@ -18,7 +24,7 @@ exports.show = function(req, res) {
   Game
     .findOne({name: req.params.name})
     .populate({
-      path: 'players',
+      path: 'players host',
       select: config.userPrivateFields,
     })
     .exec(function (err, game) {
@@ -36,7 +42,15 @@ exports.create = function(req, res) {
       return res.json(409, {message: 'Game already exists'});
     }
     if (err) return handleError(res, err);
-    return res.json(201, game);
+    Game.findOne({_id: game._id})
+      .populate({
+        path: 'players host',
+        select: config.userPrivateFields,
+      })
+      .exec(function (g) {
+        return res.json(201, game);
+      })
+    ;
   });
 };
 
@@ -55,7 +69,6 @@ exports.update = function(req, res) {
 };
 
 exports.joinGame = function (req, res) {
-  console.log('Player ' + req.body.email + ' is joining game ' + req.params.name);
   Game.findOne(
     {name: req.params.name},
     function (err, game) {
@@ -91,13 +104,6 @@ exports.destroy = function(req, res) {
       if(err) { return handleError(res, err); }
       return res.send(204);
     });
-  });
-};
-
-exports.configuration = function (req, res) {
-  tmdbService.configuration(req, function (err, json, status) {
-    if (err) return res.send(err.statusCode);
-    res.json(status, json);
   });
 };
 

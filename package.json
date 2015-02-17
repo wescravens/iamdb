@@ -25,6 +25,7 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "latest",
     "q": "^1.1.2",
+    "redis": "^0.12.1",
     "request": "^2.53.0",
     "serve-favicon": "~2.0.1",
     "socket.io": "^1.0.6",

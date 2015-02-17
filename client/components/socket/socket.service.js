@@ -30,41 +30,10 @@ function socketService (socketFactory, Auth) {
      * @param {Object} obj
      * @param {Function} cb
      */
-    syncUpdates: function (modelName, obj, cb) {
-
+    syncUpdates: function (modelName, cb) {
       cb = cb || angular.noop;
-
-      /**
-       * Syncs item creation/updates on 'model:save'
-       */
-      socket.on(modelName + ':save', function (item) {
-        if (!obj.slice) {
-          obj = item;
-          cb(item);
-          return;
-        }
-
-        var oldItem = _.find(obj, {_id: item._id});
-        var index = obj.indexOf(oldItem);
-
-        // replace oldItem if it exists
-        // otherwise just add item to the collection
-        if (oldItem) {
-          obj.splice(index, 1, item);
-        } else {
-          obj.push(item);
-        }
-
-        cb(item);
-      });
-
-      /**
-       * Syncs removed items on 'model:remove'
-       */
-      socket.on(modelName + ':remove', function (item) {
-        _.remove(obj, {_id: item._id});
-        cb(event, item, obj);
-      });
+      socket.on(modelName + ':save', cb);
+      socket.on(modelName + ':remove', cb);
     },
 
     /**

@@ -80,10 +80,10 @@ exports.configuration = function (req, cb) {
     method: 'GET',
     url: baseUrl + '/configuration',
     qs: apiParams,
-    headers: {'x-forwarded-for': req.ip}
+    headers: {'x-forwarded-for': req.ip, 'content-type': 'application/json'}
   };
   request(options, function (err, response, body) {
     if (err) return cb(err);
-    cb(null, body, response.statusCode);
+    cb(null, JSON.parse(body), response.statusCode);
   });
 };

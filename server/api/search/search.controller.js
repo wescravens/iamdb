@@ -17,6 +17,13 @@ exports.index = function(req, res) {
   }
 };
 
+exports.configuration = function (req, res) {
+  tmdbService.configuration(req, function (err, json, status) {
+    if (err) return res.send(err.statusCode);
+    res.json(status, json);
+  });
+};
+
 function handleError(res, err) {
   return res.send(500, err);
 }

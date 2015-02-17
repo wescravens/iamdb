@@ -9,10 +9,10 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
 var mongoose = require('mongoose');
+var redis = require('redis');
 var config = require('./config/environment');
 
 // Connect to database
-console.log('mongo uri', config.mongo.uri);
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
 // Populate DB with sample data
@@ -26,8 +26,7 @@ var socketio = require('socket.io')(server, {
   path: '/socket.io-client'
 });
 
-var redisAdapter = require('socket.io-redis');
-socketio.adapter(redisAdapter({host: config.redis.host, port: config.redis.port}));
+socketio.adapter(require('socket.io-redis')(config.redis));
 
 require('./config/socketio')(socketio);
 require('./config/express')(app);
