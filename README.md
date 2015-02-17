@@ -66,6 +66,13 @@ Docker images are managed with Fig. From the project root run `fig up`. This wil
 
 To stop the boot2docker vm, run `docker-machine stop iamdb-dev` and `docker-machine start iamdb-dev` to start back up.
 
+=====
+
+###Project Notes
+Lodash is included in the `util` Angular service as well as other utility functions.
+
+=====
+
 ###The Stack
 **Client**
 - angular 1.3.7

@@ -7,7 +7,8 @@ function Play(
   $q,
   Auth,
   socket,
-  Game
+  Game,
+  util
 ){
   var currentUser = Auth.getCurrentUser();
   var sock = socket.socket;
@@ -133,11 +134,11 @@ function Play(
     },
 
     playerIsHost: function (player, game) {
-      return !!_.find(game.players, {_id: player._id});
+      return !!util.find(game.players, {_id: player._id});
     },
 
     currentUserIsPlayer: function (game) {
-      return !!_.find(game.players, {_id: currentUser._id});
+      return !!util.find(game.players, {_id: currentUser._id});
     }
   };
 }

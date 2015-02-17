@@ -21,10 +21,6 @@ function PlayCtrl(
     });
   };
 
-  $scope.isPlayer = function (user, game) {
-    return !!_.find(game.players, {_id: user._id});
-  };
-
   $scope.errorMessage = '';
   $scope.createGame = function () {
     Play.createGame($scope.gameName, function (err) {
