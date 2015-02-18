@@ -57,7 +57,7 @@ function PlayGameCtrl(
   $scope.startTurn = function (id) {
     $scope.turn = {
       player: $scope.currentUser._id,
-      subject: 17051, // james franco
+      subject: 17051, // TEST: james franco
       isActor: true,
       input: id,
       game: $scope.game
