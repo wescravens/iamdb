@@ -112,7 +112,3 @@ _Notes:_
 _You will need a [TMDB](https://www.themoviedb.org/documentation/api) api key for the search forwarding and game validation to work.  [Contact me](https://github.com/wescravens) directly for the key or request your own key and put it in your `server/config/local.env.js`_
 
 _docker-machine is not necessary to build docker containers, but it addresses a big issue with boot2docker by automatically creating shared folders and mounting them as volumes in the docker containers. This allows dev tasks using fswatch to work properly._
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/wescravens/iamdb/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
