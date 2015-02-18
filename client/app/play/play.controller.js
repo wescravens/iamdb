@@ -14,9 +14,8 @@ function PlayCtrl(
   $scope.fetchGames = function () {
     Play.fetchGames().then(function (games) {
       $scope.games = games;
-      console.log('games', $scope.games);
       socket.syncUpdates('game', function (newGame) {
-        util.replaceWhere($scope.games, newGame, 'name');
+        util.addOrReplace($scope.games, newGame, {name: newGame.name});
       });
     });
   };

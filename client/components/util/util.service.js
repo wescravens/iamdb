@@ -5,8 +5,12 @@ angular.module('iamdbApp')
 
 function util () {
   var utils = {
-    replaceWhere: function (collection, newItem, query) {
+    addOrReplace: function (collection, newItem, query) {
       var index = _.findIndex(collection, query);
+      if (index === -1) {
+        collection.push(newItem);
+        return collection;
+      }
       collection.splice(index, 1, newItem);
       return collection;
     }
