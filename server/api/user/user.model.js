@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 var ObjectId = Schema.ObjectId;
+var Game = require('../game/game.model');
 
 var UserSchema = new Schema({
   name: String,
@@ -110,6 +111,19 @@ UserSchema
       next(new Error('Invalid password'));
     else
       next();
+  });
+
+/**
+ * Pre-remove hook
+ */
+
+UserSchema
+  .pre('remove', function (next) {
+    Game.update({players: this._id}, {$pull: this._id}, function (err, doc) {
+      console.log('doc', doc);
+      if (err) throw err;
+      next();
+    });
   });
 
 /**

@@ -28,6 +28,7 @@ var socketio = require('socket.io')(server, {
 
 socketio.adapter(require('socket.io-redis')(config.redis));
 
+require('./config/redis').registerClients();
 require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);

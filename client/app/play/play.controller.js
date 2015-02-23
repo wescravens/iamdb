@@ -1,7 +1,12 @@
 'use strict';
 
+angular.module('iamdbApp')
+  .controller('PlayCtrl', PlayCtrl);
+
 function PlayCtrl(
   $scope,
+  $location,
+  $state,
   Auth,
   Play,
   socket,
@@ -12,27 +17,48 @@ function PlayCtrl(
   $scope.currentUser = Auth.getCurrentUser();
 
   $scope.fetchGames = function () {
-    Play.fetchGames().then(function (games) {
-      $scope.games = games;
-      socket.syncUpdates('game', function (newGame) {
-        util.addOrReplace($scope.games, newGame, {name: newGame.name});
-      });
-    });
+    Play.fetchGames()
+      .then(onFetchSuccess, onFetchError)
+    ;
   };
+
+  function onFetchSuccess (games) {
+    $scope.games = games;
+    socket.syncUpdates('game', function (newGame) {
+      util.addOrReplace($scope.games, newGame, {name: newGame.name});
+    });
+  }
+
+  function onFetchError (err) {
+    handleError(err);
+  }
 
   $scope.errorMessage = '';
   $scope.createGame = function () {
-    Play.createGame($scope.gameName, function (err) {
-      if (err && err.status === 409) {
-        $scope.errorMessage = 'Game already exists';
-        $scope.gameName = '';
-        return;
-      }
-      if (err) return handleError(err);
-      $scope.errorMessage = '';
-      $scope.gameName = '';
-    });
+    Play.createGame($scope.gameName)
+      .then(onCreateGameSuccess, onCreateGameError)
+    ;
   };
+
+  function onCreateGameSuccess (game) {
+    $scope.errorMessage = '';
+    $scope.gameName = '';
+    // get parent state or current state to normalize
+    $location.path(getStateRoot() + '/' + game.name);
+  }
+
+  function onCreateGameError (err) {
+    if (err && err.status === 409) {
+      $scope.errorMessage = 'Game already exists';
+      $scope.gameName = '';
+      return;
+    }
+    return handleError(err);
+  }
+
+  function getStateRoot () {
+    return $state.current.name.split('.')[0];
+  }
 
   $scope.filter = {};
 
@@ -53,6 +79,3 @@ function PlayCtrl(
     console.log('$resource error: ', err);
   }
 }
-
-angular.module('iamdbApp')
-  .controller('PlayCtrl', PlayCtrl);

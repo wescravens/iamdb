@@ -1,6 +1,6 @@
 var _ = require('lodash');
-var forEachKV = _.rearg(_.forEach, [1, 0]);
-var turnService = require('./turn.service');
+var turn = require('./turn.service');
+var util = require('../util');
 
 exports.register = function (socket) {
   var events = {
@@ -8,23 +8,22 @@ exports.register = function (socket) {
     'turn:answer': answerTurn,
     'turn:challenge': challengeTurn
   };
-
-  forEachKV(events, socket.on);
+  util.forEachKV(events, socket.on);
 
   function registerTurn (options) {
-    turnService.create(options).start()
+    turn.create(options).start()
       .then(endTurn)
     ;
   }
 
   function answerTurn (turn) {
-    turnService.answer(turn)
+    turn.answer(turn)
       .then(endTurn, errorTurn)
     ;
   }
 
   function challengeTurn (turn) {
-    turnService.challenge(turn)
+    turn.challenge(turn)
       .then(endTurn)
     ;
   }

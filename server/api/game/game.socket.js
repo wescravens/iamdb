@@ -1,55 +1,46 @@
-/**
- * Broadcast updates to client when the model changes
- */
-
 'use strict';
 
-var Game = require('./game.model');
 var config = require('../../config/environment');
+var Game = require('./game.model');
+var util = require('../../components/util');
+var turnService = require('../../components/turn/turn.service');
+var registerIO = util.registerIO;
 
 exports.register = function(socket) {
-  Game.schema.post('save', function (game) {
-    Game.findOne({_id: game._id})
-      .populate({
-        path: 'players host',
-        select: config.userPrivateFields,
-      })
-      .exec(function (err, doc) {
-        if (err) return onError(socket, 'Failed to populate players');
-        onSave(socket, doc);
-      })
-    ;
+  // socket events
+  registerIO(socket, {
+    'game:join': function (packet) {
+      if (!this || !this.rooms['/' + packet.game.name])
+        return onError(this, packet.game.name + ' is not an existing room.');
+      this.join(packet.game.name);
+      this.to(packet.game.name).emit('game:join', packet.player);
+    },
+    'game:start': function (packet) {
+      console.log('game:start', packet);
+      var turn = turnService.create({
+        player: packet.game.host,
+        game: packet.game
+      });
+      Game.findOne({_id: packet.game._id}, function (err, game) {
+        if (err)
+          return onError(socket, packet.game.name, packet.game.name + ' could not be found.');
+        game.history.unshift(turn);
+        game.save();
+        socket.to(game.name).emit('game:started', game);
+      });
+    }
   });
 
-  Game.schema.post('remove', function (game) {
-    onRemove(socket, game);
+  // mongoose events
+  registerIO(Game, {
+    afterInsert: function (game) {
+      socket.emit('game:create', {game: game});
+    }
   });
+};
 
-  socket.on('game:create', function (game) {
-    socket.join(game.name);
-  });
-
-  socket.on('game:join', function (obj) {
-    if (socket.rooms['/' + obj.game.name]) {onError(socket, obj.game);}
-    socket.join(obj.game.name);
-    socket.to(obj.game.name).emit('game:playerjoined', obj.player);
-  });
-
-  socket.on('game:start', function (sock) {
-    console.log('game start', sock);
-  });
-}
-
-function onSave (socket, game) {
-  socket.emit('game:save', game);
-  // socket.to(game.name).emit('game:save', game);
-}
-
-function onRemove (socket, game) {
-  // socket.emit('game:remove', game);
-  // socket.to(game.name).emit('game:save', game);
-}
-
-function onError (socket, message) {
-  socket.emit('game:error', {message: message})
+function onError (socket, room, message) {
+  if (!room)
+    return socket.emit('game:error', {message: message})
+  socket.to(room).emit(message);
 }

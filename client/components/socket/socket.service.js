@@ -27,12 +27,11 @@ function socketService (socketFactory, Auth) {
      * and an optional callback function after new items are updated.
      *
      * @param {String} modelName
-     * @param {Object} obj
      * @param {Function} cb
      */
     syncUpdates: function (modelName, cb) {
       cb = cb || angular.noop;
-      socket.on(modelName + ':save', cb);
+      socket.on(modelName + ':create', cb);
       socket.on(modelName + ':remove', cb);
     },
 
@@ -42,7 +41,7 @@ function socketService (socketFactory, Auth) {
      * @param modelName
      */
     unsyncUpdates: function (modelName) {
-      socket.removeAllListeners(modelName + ':save');
+      socket.removeAllListeners(modelName + ':create');
       socket.removeAllListeners(modelName + ':remove');
     },
 

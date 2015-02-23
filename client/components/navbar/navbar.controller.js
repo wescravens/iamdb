@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('iamdbApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth) {
+  .controller('NavbarCtrl', function ($scope, $location, $state, Auth) {
     $scope.menu = [
       {
         'title': 'Home',
@@ -23,6 +23,6 @@ angular.module('iamdbApp')
     };
 
     $scope.isActive = function(route) {
-      return route === $location.path();
+      return $state.includes(route.substr(1));
     };
   });

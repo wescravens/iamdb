@@ -22,7 +22,9 @@ function Chat(
     },
 
     listen: function (arr) {
+      sock.removeListener('chat');
       sock.on('chat', function (chat) {
+        console.log('got chat', chat);
         arr.unshift(chat);
       });
     }

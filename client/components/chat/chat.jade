@@ -1,0 +1,13 @@
+.game-chat__display.row
+  //- .col-xs-12(ng-repeat='chat in chats')
+  .game-chat__form-wrapper.col-md-4
+    form.chat-form(name='chatForm')
+      label.hidden Chat
+      p
+        textarea.form-control(placeholder='Chat', ng-model='gameChatInput', name='game_chat_input')
+        button.btn.btn-primary(type='submit', ng-click='sendChat()') Send
+
+  .col-md-8
+    .chat-item(ng-repeat='chat in chats')
+      b {{chat.user.name}}
+      span {{chat.message}}

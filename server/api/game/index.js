@@ -1,22 +1,23 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./game.controller');
+var httpController = require('./game.http');
 var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', controller.index);
+router.get('/', httpController.index);
 
 // TODO: cache this
-router.get('/:name/validate', auth.isAuthenticated(), controller.validate);
-router.get('/:name', controller.show);
-router.post('/', auth.isAuthenticated(), controller.create);
-router.put('/:name', auth.isAuthenticated(), controller.update);
-router.put('/:name/join', auth.isAuthenticated(), controller.joinGame);
-router.patch('/:name/join', auth.isAuthenticated(), controller.joinGame);
-// router.put('/:id', controller.update);
-// router.patch('/:id', controller.update);
-router.delete('/:name', auth.isAuthenticated(), controller.destroy);
+router.get('/:name/validate', auth.isAuthenticated(), httpController.validate);
+router.get('/:name', httpController.show);
+router.post('/', auth.isAuthenticated(), httpController.http.create);
+router.post('/log', auth.isAuthenticated(), httpController.log);
+router.put('/:name', auth.isAuthenticated(), httpController.update);
+router.put('/:name/join', auth.isAuthenticated(), httpController.joinGame);
+router.patch('/:name/join', auth.isAuthenticated(), httpController.joinGame);
+// router.put('/:id', httpController.update);
+// router.patch('/:id', httpController.update);
+router.delete('/:name', auth.isAuthenticated(), httpController.destroy);
 
 module.exports = router;

@@ -26,6 +26,11 @@ User.find({}, function (err, docs) {
     name: 'Test User',
     email: 'test@test.com',
     password: 'test'
+  }, {
+    provider: 'local',
+    name: 'SERVER',
+    email: 'server@iamdb.io',
+    password: 'serveradmin'
   }, function () {
     console.log('Populated default users');
   });

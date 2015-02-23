@@ -9,6 +9,7 @@
   "noarg": true,
   "regexp": true,
   "undef": true,
+  "validthis": true,
   "smarttabs": true,
   "asi": true,
   "debug": true,

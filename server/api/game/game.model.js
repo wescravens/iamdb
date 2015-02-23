@@ -17,6 +17,13 @@ var GameSchema = new Schema({
     isValid: {type: Boolean, default: false},
     character: String
   }],
+  log: [{
+    user: {type: ObjectId, ref: 'User'},
+    message: String,
+    timestamp: Date
+  }]
 });
+
+GameSchema.plugin(require('mongoose-lifecycle'));
 
 module.exports = mongoose.model('Game', GameSchema);

@@ -17,20 +17,24 @@ function PlayGameCtrl(
   Auth
 ){
   var intern = {};
+  var sock = socket.socket;
 
-  $scope.currentUser = Auth.getCurrentUser();
+  var currentUser = $scope.currentUser = Auth.getCurrentUser();
 
   Play.fetchGame($stateParams.id, function (err, game) {
     if (err) return handleError(err);
     $scope.game = game;
-    socket.syncUpdates('game', function (updated) {
-      $scope.game = updated;
+    sock.emit('game:join', {game: game, player: currentUser}, function () {
+      socket.syncUpdates('game', function (updated) {
+        $scope.game = updated;
+      });
     });
   });
 
   $scope.baseImageUrl = $sessionStorage.baseImageUrl;
   if (!$scope.baseImageUrl) {
     Search.configuration().$promise.then(function (conf) {
+      if (!conf || !conf.images) return;
       $scope.baseImageUrl =
         $sessionStorage.baseImageUrl =
         conf.images.base_url + 'w500';
@@ -40,10 +44,6 @@ function PlayGameCtrl(
   $scope.$on('$destroy', function () {
     socket.unsyncUpdates('game');
     Turn.unsyncUpdates();
-  });
-
-  $scope.$watch('game', function (newValue, oldValue) {
-    console.log('game updated', newValue, oldValue);
   });
 
   $scope.joinGame = function (game) {
@@ -79,7 +79,6 @@ function PlayGameCtrl(
 
   function startTimer () {
     intern.__dfd = $q.defer();
-    console.log('intern.__dfd', intern.__dfd);
     var timeLimit = $scope.timeLeft = 30 * 1000;
     intern.__timerInterval = setInterval(function () {
       $scope.timeLeft--;
