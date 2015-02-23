@@ -6,13 +6,9 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', httpController.index);
-
-// TODO: cache this
-router.get('/:name/validate', auth.isAuthenticated(), httpController.validate);
-router.get('/:name', httpController.show);
-router.post('/', auth.isAuthenticated(), httpController.http.create);
-router.post('/log', auth.isAuthenticated(), httpController.log);
+router.get('/', httpController.list);
+router.get('/:name', httpController.one);
+router.post('/', auth.isAuthenticated(), httpController.create);
 router.put('/:name', auth.isAuthenticated(), httpController.update);
 router.put('/:name/join', auth.isAuthenticated(), httpController.joinGame);
 router.patch('/:name/join', auth.isAuthenticated(), httpController.joinGame);
