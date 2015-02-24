@@ -22,8 +22,6 @@ var Turn = comb.define({
       this.isActor = options.isActor || false;
       this.deferred = new comb.Promise();
       this.promise = this.deferred.promise();
-      console.log('deferred', this.deferred);
-      console.log('promise', this.promise);
     },
     start: function () {
       this.startTime = new Date();
