@@ -37,7 +37,7 @@ function socketService ($q, socketFactory, Auth, util) {
     },
 
     deregisterIO: function (obj) {
-      util.forEach(arr, function (cb, event) {
+      util.forEach(obj, function (cb, event) {
         if (!event || (typeof event !== 'string' && typeof cb === 'string'))
           event = cb;
         socket.removeAllListeners(event);

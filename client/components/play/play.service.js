@@ -22,7 +22,11 @@ function Play(
       var defaults = {
         host: currentUser._id,
         name: name,
-        players: [currentUser._id]
+        players: [currentUser._id],
+        log: [{
+          message: 'Game "' + name + '" created.',
+          timestamp: new Date()
+        }]
       };
       return Game.save(defaults).$promise;
     },

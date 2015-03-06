@@ -71,7 +71,7 @@ function PlayGameCtrl(
   $scope.$on('$destroy', function () {
     socket.deregisterIO(ioEvents);
     Turn.unsyncUpdates();
-    if (!game) return;
+    if (!$scope.game) return;
     socket.leaveRoom({game: $scope.game, player: currentUser});
   });
 

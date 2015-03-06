@@ -14,11 +14,6 @@ exports.register = function(socket) {
     'game:start': startGame
   });
 
-  // mongoose events
-  registerIO(Game, {
-    'afterInsert': onCreate
-  });
-
   function joinGame (packet) {
     if (!packet || !packet.game) return;
     socket.join(packet.game.name, function () {
@@ -27,7 +22,7 @@ exports.register = function(socket) {
   }
 
   function leaveGame (packet) {
-    if (!packet || !packet.game) return;
+    if (!packet || !packet.game || !packet.player) return;
     socket.leave(packet.game.name, function () {
       console.log('Player %s is leaving game %s', packet.player.name, packet.game.name);
       socket.emit('game:left', packet.player);
@@ -43,6 +38,7 @@ exports.register = function(socket) {
     });
 
     Game.findOne({_id: packet.game._id}, function (err, game) {
+      console.log('game', game, 'err', err);
       if (err)
         return onError(packet.game.name, packet.game.name + ' could not be found.');
       game.history.unshift(turn);
@@ -51,8 +47,23 @@ exports.register = function(socket) {
     });
   }
 
+  // mongoose events
+  registerIO(Game, {
+    'afterInsert': onCreate
+  });
+
   function onCreate (game) {
-    socket.emit('game:created', {game: game});
+    console.log('onCreate');
+    Game.findOne({_id: game._id})
+      .populate({
+        path: 'players host history log.user',
+        select: config.userPrivateFields,
+      })
+      .exec(function (err, populated) {
+        if (err) onError(game.name, err);
+        socket.emit('game:created', populated);
+      })
+    ;
   }
 
   function onError (room, message) {

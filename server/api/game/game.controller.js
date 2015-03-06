@@ -2,9 +2,16 @@
 
 var _ = require('lodash');
 var Game = require('./game.model');
+var User = require('../user/user.model');
 var config = require('../../config/environment');
 var tmdbService = require('../../components/tmdb/tmdb.service');
 var comb = require('comb');
+var serverUserId;
+
+User.findOne({name: 'SERVER'}, function (err, user) {
+  if (err || !user) console.log('Failed to retreive SERVER ID');
+  serverUserId = user._id;
+});
 
 // Get list of games
 exports.list = function() {
@@ -43,6 +50,9 @@ exports.one = function(name) {
 // Creates a new game in the DB.
 exports.create = function (initialGame) {
   var dfd = new comb.Promise();
+  if (initialGame.log) {
+    initialGame.log[0].user = serverUserId;
+  }
   Game.create(initialGame, function(err, game) {
     if (err && err.code === 11000) {
       return dfd.errback({status: 409, error: err})
@@ -53,8 +63,9 @@ exports.create = function (initialGame) {
         path: 'players host history log.user',
         select: config.userPrivateFields,
       })
-      .exec(function (populatedGame) {
-        return dfd.callback({status: 201, data: populatedGame})
+      .exec(function (err, populatedGame) {
+        if (err) return dfd.errback({status: 500, error: err});
+        return dfd.callback({status: 201, data: populatedGame});
       })
     ;
   });
