@@ -16,20 +16,47 @@ function PlayGameCtrl(
   Turn,
   Auth
 ){
-  var intern = {};
-  var sock = socket.socket;
-
+  var internal = {};
   var currentUser = $scope.currentUser = Auth.getCurrentUser();
 
-  Play.fetchGame($stateParams.id, function (err, game) {
-    if (err) return handleError(err);
+  Play.fetchGame($stateParams.id)
+    .then(onGameFetchSuccess, onGameFetchError)
+  ;
+
+  function onGameFetchSuccess (game) {
     $scope.game = game;
-    sock.emit('game:join', {game: game, player: currentUser}, function () {
-      socket.syncUpdates('game', function (updated) {
-        $scope.game = updated;
-      });
-    });
-  });
+    socket.joinRoom(game, currentUser)
+      .then(syncGameUpdates)
+    ;
+  }
+
+  function onGameFetchError (err) {
+    handleError(err);
+  }
+
+  var ioEvents = {
+    'game:joined': onPlayerJoin,
+    'game:left': onPlayerLeave
+  }
+
+  function onPlayerJoin (player) {
+    console.log('player joined', player);
+    util.pushWhere($scope.game.players, player, {_id: player._id});
+  }
+
+  function onPlayerLeave (player) {
+    console.log('player left', player);
+    util.pullWhere($scope.game.players, {_id: player._id});
+  }
+
+  function syncGameUpdates () {
+    socket.syncUpdates('game', onGameUpdate);
+  }
+
+  function onGameUpdate (updated) {
+    $scope.game = updated;
+    toastr.info('Game Update: ', JSON.stringify(updated));
+  }
 
   $scope.baseImageUrl = $sessionStorage.baseImageUrl;
   if (!$scope.baseImageUrl) {
@@ -42,17 +69,11 @@ function PlayGameCtrl(
   }
 
   $scope.$on('$destroy', function () {
-    socket.unsyncUpdates('game');
+    socket.deregisterIO(ioEvents);
     Turn.unsyncUpdates();
+    if (!game) return;
+    socket.leaveRoom({game: $scope.game, player: currentUser});
   });
-
-  $scope.joinGame = function (game) {
-    Play.joinGame(game);
-  };
-
-  $scope.yourTurn = function () {
-
-  };
 
   $scope.startTurn = function (id) {
     $scope.turn = {
@@ -67,25 +88,25 @@ function PlayGameCtrl(
   };
 
   $scope.answerTurn = function (input) {
-    intern.__dfd.resolve('answered');
+    internal.__dfd.resolve('answered');
     $scope.turn.input = input;
     Turn.answer($scope.turn);
   };
 
   $scope.challengeTurn = function () {
-    intern.__dfd.resolve('challenged');
+    internal.__dfd.resolve('challenged');
     Turn.challenge($scope.turn);
   };
 
   function startTimer () {
-    intern.__dfd = $q.defer();
+    internal.__dfd = $q.defer();
     var timeLimit = $scope.timeLeft = 30 * 1000;
-    intern.__timerInterval = setInterval(function () {
+    internal.__timerInterval = setInterval(function () {
       $scope.timeLeft--;
     }, 1000);
     setTimeout(function () {
-      clearInterval(intern.__timerInterval);
-      intern.__dfd.resolve('timeout');
+      clearInterval(internal.__timerInterval);
+      internal.__dfd.resolve('timeout');
     }, timeLimit);
   }
 

@@ -22,7 +22,7 @@ exports.one = function (req, res) {
   ;
 
   function onSuccess (doc) {
-    res.json(doc.status, doc.game);
+    res.json(doc.status, doc.data);
   }
 
   function onError (err) {
@@ -31,7 +31,7 @@ exports.one = function (req, res) {
 };
 
 exports.create = function(req, res) {
-  controller.create
+  controller.create(req.body)
     .then(onSuccess, onError)
   ;
 

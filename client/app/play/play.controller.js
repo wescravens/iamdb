@@ -16,6 +16,25 @@ function PlayCtrl(
   $scope.currentUserGames = [];
   $scope.currentUser = Auth.getCurrentUser();
 
+  $scope.$watch('games', function (games) {
+    console.log('games', games);
+  });
+
+  var ioEvents = {
+    'game:created': onGameCreated,
+    'game:removed': onGameRemoved
+  };
+
+  function onGameCreated (newGame) {
+    console.log('game update', newGame);
+    util.pushWhere($scope.games, newGame, {name: newGame.name});
+  }
+
+  function onGameRemoved (removed) {
+    console.log('game removed', removed);
+    util.pullWhere($scope.games, {name: removed.name});
+  }
+
   $scope.fetchGames = function () {
     Play.fetchGames()
       .then(onFetchSuccess, onFetchError)
@@ -24,9 +43,7 @@ function PlayCtrl(
 
   function onFetchSuccess (games) {
     $scope.games = games;
-    socket.syncUpdates('game', function (newGame) {
-      util.addOrReplace($scope.games, newGame, {name: newGame.name});
-    });
+    socket.registerIO();
   }
 
   function onFetchError (err) {
@@ -72,7 +89,7 @@ function PlayCtrl(
   };
 
   $scope.$on('$destroy', function () {
-    socket.unsyncUpdates('game');
+    socket.deregisterIO(ioEvents);
   });
 
   function handleError(err) {

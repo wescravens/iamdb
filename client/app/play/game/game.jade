@@ -1,24 +1,24 @@
 .game__inner
-  h1.page-header Game: {{game.name}}
-  button.btn.btn-primary(ng-click='joinGame(game)', ng-show='!currentUserIsPlayer()') Join
+  h1.page-header {{game.name}}
+  //- button.btn.btn-primary(ng-click='joinGame(game)', ng-show='!currentUserIsPlayer()') Join
   ul
     li(ng-repeat='player in game.players')
       p {{player.name}}
         span(ng-show='playerIsHost(player)') &nbsp;(Host)
-  form.create-game-form
-    p
-      strong Search TMDB
-    label
-      input(type='radio', name='searchOption', ng-model='searchController', value='person')
-      | &nbsp;Actor
-    br
-    label
-      input(type='radio', name='searchOption', ng-model='searchController', value='movie')
-      | &nbsp;Movie
-    p.input-group
-      input.form-control(type='text', placeholder='Search TMDB', ng-model='query')
-      span.input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='searchTMDB()') Search
+  //- form.create-game-form
+  //-   p
+  //-     strong Search TMDB
+  //-   label
+  //-     input(type='radio', name='searchOption', ng-model='searchController', value='person')
+  //-     | &nbsp;Actor
+  //-   br
+  //-   label
+  //-     input(type='radio', name='searchOption', ng-model='searchController', value='movie')
+  //-     | &nbsp;Movie
+  //-   p.input-group
+  //-     input.form-control(type='text', placeholder='Search TMDB', ng-model='query')
+  //-     span.input-group-btn
+  //-       button.btn.btn-primary(type='submit', ng-click='searchTMDB()') Search
 
   .results.row
     .movie-result(ng-if='searchController == "movie"')

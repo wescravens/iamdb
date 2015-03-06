@@ -24,7 +24,7 @@ div(ng-include='"components/navbar/navbar.html"')
       .gamecordion.well
         span.gamecordion__game(ng-repeat='game in games')
           a(ui-sref='play.game({id: game.name})')
-            b.gamecordion__gametitle {{game.name}}
+            b.gamecordion__game-title {{game.name}}
           i.gamecordion__game-host
             | &nbsp; {{game.host.name}}
     .col-xs-12.col-sm-9

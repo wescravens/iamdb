@@ -4,7 +4,7 @@
 angular.module('iamdbApp')
   .factory('socket', socketService);
 
-function socketService (socketFactory, Auth) {
+function socketService ($q, socketFactory, Auth, util) {
 
   // socket.io now auto-configures its connection when we ommit a connection url
   var ioSocket = io('', {
@@ -29,24 +29,31 @@ function socketService (socketFactory, Auth) {
      * @param {String} modelName
      * @param {Function} cb
      */
-    syncUpdates: function (modelName, cb) {
-      cb = cb || angular.noop;
-      socket.on(modelName + ':create', cb);
-      socket.on(modelName + ':remove', cb);
+
+    registerIO: function (obj) {
+      util.forEach(obj, function (cb, event) {
+        socket.on(event, cb);
+      });
     },
 
-    /**
-     * Removes listeners for a models updates on the socket
-     *
-     * @param modelName
-     */
-    unsyncUpdates: function (modelName) {
-      socket.removeAllListeners(modelName + ':create');
-      socket.removeAllListeners(modelName + ':remove');
+    deregisterIO: function (obj) {
+      util.forEach(arr, function (cb, event) {
+        if (!event || (typeof event !== 'string' && typeof cb === 'string'))
+          event = cb;
+        socket.removeAllListeners(event);
+      });
     },
 
-    joinRoom: function (name) {
-      socket.emit('join room', name);
+    joinRoom: function (game, player) {
+      var dfd = $q.defer();
+      socket.emit('game:join', {game: game, player: player}, dfd.resolve);
+      return dfd.promise;
+    },
+
+    leaveRoom: function (game, player) {
+      var dfd = $q.defer();
+      socket.emit('game:leave', {game: game, player: player}, dfd.resolve);
+      return dfd.promise;
     }
   };
 }

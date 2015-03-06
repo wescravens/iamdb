@@ -74,8 +74,8 @@ exports.search = function (req) {
  * @param  {Function} cb  Callback function is called when TMDB responds
  * @return {void}
  */
-exports.configuration = function (req, cb) {
-  cb = cb || _.noop;
+exports.configuration = function (req) {
+  var dfd = new comb.Promise();
   var options = {
     method: 'GET',
     url: baseUrl + '/configuration',
@@ -83,7 +83,8 @@ exports.configuration = function (req, cb) {
     headers: {'x-forwarded-for': req.ip, 'content-type': 'application/json'}
   };
   request(options, function (err, response, body) {
-    if (err) return cb(err);
-    cb(null, JSON.parse(body), response.statusCode);
+    if (err) return dfd.errback(err);
+    dfd.callback({body: JSON.parse(body), status: response.statusCode});
   });
+  return dfd.promise();
 };

@@ -1,14 +1,12 @@
-var _ = require('lodash');
 var turn = require('./turn.service');
 var util = require('../util');
 
 exports.register = function (socket) {
-  var events = {
+  util.registerIO(socket, {
     'turn:start': registerTurn,
     'turn:answer': answerTurn,
     'turn:challenge': challengeTurn
-  };
-  util.forEachKV(events, socket.on);
+  });
 
   function registerTurn (options) {
     turn.create(options).start()
@@ -29,10 +27,10 @@ exports.register = function (socket) {
   }
 
   function endTurn (turn) {
-    socket.to(turn.game.name).emit('turn:end', turn);
+    socket.in(turn.game.name).emit('turn:end', turn);
   }
 
   function errorTurn (err) {
-    socket.to(err.room).emit('turn:error', err.message);
+    socket.in(err.room).emit('turn:error', err.message);
   }
 };

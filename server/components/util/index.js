@@ -1,8 +1,11 @@
+'use strict';
+
 var _ = require('lodash');
 var mixins = {
-  forEachKV: _.rearg(_.forEach, [1, 0]),
   registerIO: function (subject, events) {
-    mixins.forEachKV(events, subject.on);
+    _.forEach(events, function (value, key) {
+      subject.on(key.toString(), value);
+    });
   }
 };
 

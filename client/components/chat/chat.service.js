@@ -6,6 +6,7 @@ angular.module('iamdbApp')
 function Chat(
   $stateParams,
   socket,
+  toastr,
   Auth
 ){
   var sock = socket.socket;
@@ -14,19 +15,27 @@ function Chat(
 
   return {
     send: function (message) {
-      sock.emit('chat', {
+      var chat = {
         message: message,
         room: room,
         user: currentUser
-      });
+      };
+      sock.emit('chat', chat);
+      return chat;
     },
 
     listen: function (arr) {
-      sock.removeListener('chat');
+      removeAllListeners();
       sock.on('chat', function (chat) {
-        console.log('got chat', chat);
-        arr.unshift(chat);
+        console.log('new chat', chat);
+        toastr.info(chat.message, chat.user.name);
+        arr.push(chat);
       });
     }
   };
+
+  function removeAllListeners () {
+    sock.removeListener('chat:new');
+    sock.removeListener('chat:list');
+  }
 }

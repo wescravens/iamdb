@@ -35,9 +35,7 @@ var Turn = comb.define({
       this.result = reason;
       this.deferred.callback(this);
     },
-    hasClientTimeElapsed: function (date) {
-      // return true to stop turn
-      if (!date || !date instanceof Date) return true;
+    clientTimeHasElapsed: function (date) {
       return difference(date, this.startTime, 'millisecond') >= this.duration;
     }
   }

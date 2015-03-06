@@ -9,38 +9,55 @@ var registerIO = util.registerIO;
 exports.register = function(socket) {
   // socket events
   registerIO(socket, {
-    'game:join': function (packet) {
-      if (!this || !this.rooms['/' + packet.game.name])
-        return onError(this, packet.game.name + ' is not an existing room.');
-      this.join(packet.game.name);
-      this.to(packet.game.name).emit('game:join', packet.player);
-    },
-    'game:start': function (packet) {
-      console.log('game:start', packet);
-      var turn = turnService.create({
-        player: packet.game.host,
-        game: packet.game
-      });
-      Game.findOne({_id: packet.game._id}, function (err, game) {
-        if (err)
-          return onError(socket, packet.game.name, packet.game.name + ' could not be found.');
-        game.history.unshift(turn);
-        game.save();
-        socket.to(game.name).emit('game:started', game);
-      });
-    }
+    'game:join': joinGame,
+    'game:leave': leaveGame,
+    'game:start': startGame
   });
 
   // mongoose events
   registerIO(Game, {
-    afterInsert: function (game) {
-      socket.emit('game:create', {game: game});
-    }
+    'afterInsert': onCreate
   });
-};
 
-function onError (socket, room, message) {
-  if (!room)
-    return socket.emit('game:error', {message: message})
-  socket.to(room).emit(message);
-}
+  function joinGame (packet) {
+    if (!packet || !packet.game) return;
+    socket.join(packet.game.name, function () {
+      socket.emit('game:joined', packet.player);
+    });
+  }
+
+  function leaveGame (packet) {
+    if (!packet || !packet.game) return;
+    socket.leave(packet.game.name, function () {
+      console.log('Player %s is leaving game %s', packet.player.name, packet.game.name);
+      socket.emit('game:left', packet.player);
+    });
+  }
+
+  function startGame (packet) {
+    if (!packet || !packet.game) return;
+    console.log('game:started', packet);
+    var turn = turnService.create({
+      player: packet.game.host,
+      game: packet.game
+    });
+
+    Game.findOne({_id: packet.game._id}, function (err, game) {
+      if (err)
+        return onError(packet.game.name, packet.game.name + ' could not be found.');
+      game.history.unshift(turn);
+      game.save();
+      socket.emit('game:started', game);
+    });
+  }
+
+  function onCreate (game) {
+    socket.emit('game:created', {game: game});
+  }
+
+  function onError (room, message) {
+    if (!room)
+      return socket.emit('game:error', {message: message})
+    socket.emit(message);
+  }
+};

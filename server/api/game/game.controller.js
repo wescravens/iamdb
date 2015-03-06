@@ -28,7 +28,7 @@ exports.one = function(name) {
   Game
     .findOne({name: name})
     .populate({
-      path: 'players host',
+      path: 'players host history log.user',
       select: config.userPrivateFields,
     })
     .exec(function (err, game) {
@@ -50,7 +50,7 @@ exports.create = function (initialGame) {
     if (err) return dfd.errback({status: 500, error: err});
     Game.findOne({_id: game._id})
       .populate({
-        path: 'players host',
+        path: 'players host history log.user',
         select: config.userPrivateFields,
       })
       .exec(function (populatedGame) {
