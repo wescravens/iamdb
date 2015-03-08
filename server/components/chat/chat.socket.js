@@ -8,5 +8,5 @@ exports.register = function (socket) {
       socket.to(chat.room).emit('chat', chat);
       chatController.pushMessage(chat);
     }
-  })
+  });
 };

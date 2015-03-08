@@ -75,45 +75,6 @@ function PlayGameCtrl(
     socket.leaveRoom({game: $scope.game, player: currentUser});
   });
 
-  $scope.startTurn = function (id) {
-    $scope.turn = {
-      player: $scope.currentUser._id,
-      subject: 17051, // TEST: james franco
-      isActor: true,
-      input: id,
-      game: $scope.game
-    };
-    Turn.start($scope.turn);
-    startTimer().then(handleTurnResult);
-  };
-
-  $scope.answerTurn = function (input) {
-    internal.__dfd.resolve('answered');
-    $scope.turn.input = input;
-    Turn.answer($scope.turn);
-  };
-
-  $scope.challengeTurn = function () {
-    internal.__dfd.resolve('challenged');
-    Turn.challenge($scope.turn);
-  };
-
-  function startTimer () {
-    internal.__dfd = $q.defer();
-    var timeLimit = $scope.timeLeft = 30 * 1000;
-    internal.__timerInterval = setInterval(function () {
-      $scope.timeLeft--;
-    }, 1000);
-    setTimeout(function () {
-      clearInterval(internal.__timerInterval);
-      internal.__dfd.resolve('timeout');
-    }, timeLimit);
-  }
-
-  function handleTurnResult (result) {
-    console.log('turn result', result, $scope.turn);
-  }
-
   function handleError (err) {
     console.log('handle error', err);
     if (err.status === 404) $location.path('play');

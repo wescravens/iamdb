@@ -1,36 +1,43 @@
-var turn = require('./turn.service');
-var util = require('../util');
+var turnService = require('./turn.service');
+var registerIO = require('../util').registerIO;
 
 exports.register = function (socket) {
-  util.registerIO(socket, {
+  registerIO(socket, {
     'turn:start': registerTurn,
     'turn:answer': answerTurn,
-    'turn:challenge': challengeTurn
+    'turn:challenge': challengeTurn,
+    'turn:forfeit': forfeitTurn
   });
 
   function registerTurn (options) {
-    turn.create(options).start()
+    turnService.create(options).start()
       .then(endTurn)
     ;
   }
 
   function answerTurn (turn) {
-    turn.answer(turn)
+    turnService.answer(turn)
       .then(endTurn, errorTurn)
     ;
   }
 
   function challengeTurn (turn) {
-    turn.challenge(turn)
+    turnService.challenge(turn)
+      .then(endTurn)
+    ;
+  }
+
+  function forfeitTurn (turn) {
+    turnService.forfeit(turn)
       .then(endTurn)
     ;
   }
 
   function endTurn (turn) {
-    socket.in(turn.game.name).emit('turn:end', turn);
+    socket.to(turn.game.name).emit('turn:end', turn);
   }
 
   function errorTurn (err) {
-    socket.in(err.room).emit('turn:error', err.message);
+    socket.to(err.room).emit('turn:error', err.message);
   }
 };

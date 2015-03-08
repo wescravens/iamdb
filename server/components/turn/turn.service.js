@@ -14,3 +14,8 @@ exports.challenge = function (turn) {
   turn.end('challenged');
   return turn;
 };
+
+exports.forfeit = function (turn) {
+  turn.end('forfeited');
+  return turn;
+}
