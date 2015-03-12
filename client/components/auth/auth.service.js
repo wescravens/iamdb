@@ -16,6 +16,11 @@ function Auth(
     currentUser = User.get();
   }
 
+  currentUser.isHost = function (game) {
+    if (!game || !game._id) return;
+    return this._id === game._id;
+  };
+
   return {
 
     /**

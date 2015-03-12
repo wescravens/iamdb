@@ -4,6 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var comb = require('comb');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -97,6 +98,18 @@ exports.me = function(req, res, next) {
       res.json(user);
     })
   ;
+};
+
+exports.server = function () {
+  var dfd = new comb.Promise();
+  User.findOne({name: 'SERVER'})
+    .select(config.userPrivateFields)
+    .exec(function (err, user) {
+      if (err) return dfd.errback(err);
+      dfd.callback(user);
+    })
+  ;
+  return dfd.promise();
 };
 
 /**

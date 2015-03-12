@@ -8,7 +8,7 @@ var ObjectId = Schema.ObjectId;
 var Game = require('../game/game.model');
 
 var UserSchema = new Schema({
-  name: String,
+  name: {type: String, unique: true},
   email: {
     type: String,
     lowercase: true,

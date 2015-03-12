@@ -58,15 +58,20 @@ function PlayGameCtrl(
     toastr.info('Game Update: ', JSON.stringify(updated));
   }
 
-  $scope.baseImageUrl = $sessionStorage.baseImageUrl;
-  if (!$scope.baseImageUrl) {
-    Search.configuration().$promise.then(function (conf) {
-      if (!conf || !conf.images) return;
-      $scope.baseImageUrl =
-        $sessionStorage.baseImageUrl =
-        conf.images.base_url + 'w500';
-    }, handleError);
-  }
+  $scope.playerIsHost = function (player) {
+    if (!$scope.game || !$scope.game.host) return false;
+    return $scope.game.host._id === player._id;
+  };
+
+  // $scope.baseImageUrl = $sessionStorage.baseImageUrl;
+  // if (!$scope.baseImageUrl) {
+  //   Search.configuration().$promise.then(function (conf) {
+  //     if (!conf || !conf.images) return;
+  //     $scope.baseImageUrl =
+  //       $sessionStorage.baseImageUrl =
+  //       conf.images.base_url + 'w500';
+  //   }, handleError);
+  // }
 
   $scope.$on('$destroy', function () {
     socket.deregisterIO(ioEvents);

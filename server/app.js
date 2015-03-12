@@ -38,5 +38,13 @@ server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
 
+require('./api/user/user.controller').server()
+  .then(function (user) {
+    console.log('got server user', user);
+    global.SERVER_USER = user;
+  }, function (err) {
+    console.error('failed to retrieve server user from db: ', err);
+  });
+
 // Expose app
 exports = module.exports = app;

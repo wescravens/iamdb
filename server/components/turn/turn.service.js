@@ -1,5 +1,7 @@
 var turnFactory = require('./turn.factory');
 var tmdbService = require('../tmdb/tmdb.service');
+var chatController = require('../chat/chat.controller');
+var comb = require('comb');
 
 exports.create = function (options) {
   return turnFactory(options);

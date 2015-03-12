@@ -4,6 +4,7 @@ var config = require('../../config/environment');
 var Game = require('./game.model');
 var util = require('../../components/util');
 var turnService = require('../../components/turn/turn.service');
+var gameController = require('./game.controller');
 var registerIO = util.registerIO;
 
 exports.register = function(socket) {
@@ -30,20 +31,26 @@ exports.register = function(socket) {
   }
 
   function startGame (packet) {
-    if (!packet || !packet.game) return;
     console.log('game:started', packet);
+    if (!packet || !packet.game) return;
     var turn = turnService.create({
       player: packet.game.host,
       game: packet.game
     });
 
     Game.findOne({_id: packet.game._id}, function (err, game) {
-      console.log('game', game, 'err', err);
       if (err)
         return onError(packet.game.name, packet.game.name + ' could not be found.');
+      console.log('found game', global.SERVER_USER);
       game.history.unshift(turn);
       game.save();
-      socket.emit('game:started', game);
+      gameController.pushMessage({
+        message: turn.player + ' started the game.',
+        user: SERVER_USER._id
+      }).then(function (message) {
+        socket.emit('chat', message);
+        socket.emit('game:started', game);
+      });
     });
   }
 

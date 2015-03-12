@@ -10,12 +10,22 @@ function play () {
   return {
     restrict: 'E',
     templateUrl: 'components/play/play.html',
-    controller: 'playViewer as view'
+    controller: 'playViewer as play'
   };
 }
 
-function playViewer (Play, Turn) {
+function playViewer ($scope, Play, Turn, Auth, toastr) {
   var view = this;
+  var currentUser = Auth.getCurrentUser();
+
+  view.startGame = function () {
+    if (!$scope.game) return toastr.error('Error', 'Failed to fetch game');
+    // if (!$scope.game.isHost(currentUser)) {
+    //   var host = $scope.game.host.name || 'the host';
+    //   return toastr.error('Error', 'Only ' + host + ' can start the game.');
+    // }
+    Play.startGame($scope.game);
+  };
 
   view.startTurn = function (id) {
     view.turn = {

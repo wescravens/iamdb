@@ -8,9 +8,11 @@ function Play(
   Auth,
   socket,
   Game,
+  gameFactory,
   util
 ){
   var currentUser = Auth.getCurrentUser();
+  var io = socket.socket;
   return {
     /**
      * Create a new game
@@ -29,6 +31,14 @@ function Play(
         }]
       };
       return Game.save(defaults).$promise;
+
+      // // normalize this
+      // var dfd = $q.defer();
+      // Game.save(defaults).$promise
+      //   .success(dfd.resolve)
+      //   .error(dfd.reject)
+      // ;
+      // return dfd.promise();
     },
     /**
      * Requests a single game
@@ -75,11 +85,15 @@ function Play(
       return Game.remove({name: game.name}).$promise;
     },
 
+    startGame: function (game) {
+      io.emit('game:start', {game: game});
+    },
+
     validate: function (game, turn) {
       return Game.validate({game: game.name}, turn).$promise;
     },
 
-    playerIsHost: function (player, game) {
+    isHost: function (player, game) {
       return !!util.find(game.players, {_id: player._id});
     },
 
